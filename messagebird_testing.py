@@ -18,9 +18,9 @@ client = messagebird.Client('4LyuUQ5rrh2CT1Zwrql1hYuBW', features=[messagebird.F
 webhook_request_dict = {
     "events": ["message.created", "message.updated"],
     "channelId": "7e4da85010004d32a1427e4a2edcee33",
-    "url": "https://example.com/webhook"
+    "url": "https://chatbo-webhook-endpoint.herokuapp.com/webhook"
   }
-# client.conversation_create_webhook(webhook_request_dict)
+client.conversation_create_webhook(webhook_request_dict)
 # print(client.conversation_list_webhooks())
 # client.conversation_delete_webhook('139062c3875c4ac1a9706f4b9b3753ce')
 
