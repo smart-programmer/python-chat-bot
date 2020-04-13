@@ -1,9 +1,28 @@
 import messagebird
 from messagebird.conversation_message import MESSAGE_TYPE_HSM, MESSAGE_TYPE_TEXT
 
-accessKey = "4LyuUQ5rrh2CT1Zwrql1hYuBW"
+accessKey = "4LyuUQ5rrh2CT1Zwrql1hYuBW" # api key
+
+
 
 client = messagebird.Client('4LyuUQ5rrh2CT1Zwrql1hYuBW', features=[messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
+# print(client.request_plain_text("https://whatsapp-sandbox.messagebird.com/v1/conversations/8191d282593f49809be22df4394e4c0a/messages?limit=20"))
+# print(client.request_plain_text("https://whatsapp-sandbox.messagebird.com/v1/conversations/8191d282593f49809be22df4394e4c0a")) this returns type str
+# print(type(client.request("https://rest.messagebird.com/lookup/966503681868"))) # .request returns type DICT
+# .request_store_as_file() this stores in a file
+
+# messages = client.conversation_list_messages("8191d282593f49809be22df4394e4c0a", limit=20)
+# print(messages)
+# print(client.message_list().items)
+
+webhook_request_dict = {
+    "events": ["message.created", "message.updated"],
+    "channelId": "7e4da85010004d32a1427e4a2edcee33",
+    "url": "https://example.com/webhook"
+  }
+# client.conversation_create_webhook(webhook_request_dict)
+# print(client.conversation_list_webhooks())
+# client.conversation_delete_webhook('139062c3875c4ac1a9706f4b9b3753ce')
 
 # first step start a conversation using an HSM
 conversation = client.conversation_start({
@@ -27,7 +46,9 @@ conversation = client.conversation_start({
     }
   }
 })
-print(conversation)
+
+# print(client.conversation_list_messages("8191d282593f49809be22df4394e4c0a", limit=20))
+
 
 # # response was 
 # """{
@@ -83,20 +104,20 @@ msg = client.conversation_create_message('8191d282593f49809be22df4394e4c0a', {
 
 #response
 
-"""{
-  "id": "19fa205a240e4de59da25f456094ea38",
-  "conversationId": "8191d282593f49809be22df4394e4c0a",
-  "platform": "whatsapp",
-  "channelId": "7e4da85010004d32a1427e4a2edcee33",
-  "type": "text",
-  "content": {
-    "text": "ok"
-  },
-  "direction": "sent",
-  "status": "pending",
-  "createdDatetime": "2020-04-11T20:16:51.1082409Z",
-  "updatedDatetime": null
-}"""
+# """{
+#   "id": "19fa205a240e4de59da25f456094ea38",
+#   "conversationId": "8191d282593f49809be22df4394e4c0a",
+#   "platform": "whatsapp",
+#   "channelId": "7e4da85010004d32a1427e4a2edcee33",
+#   "type": "text",
+#   "content": {
+#     "text": "ok"
+#   },
+#   "direction": "sent",
+#   "status": "pending",
+#   "createdDatetime": "2020-04-11T20:16:51.1082409Z",
+#   "updatedDatetime": null
+# }"""
 
 
 # balanceOBJ = client.balance()
