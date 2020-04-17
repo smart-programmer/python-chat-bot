@@ -33,6 +33,10 @@ def webhook_endpoint():
     client = Client(message_bird_api_access_key, features=[messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
 
     # handle incoming message
+    webhookOBJ = WebhookMessage()
+    webhookOBJ.messagebird_request_string = webhook_json_string
+    db.session.add(webhookOBJ)
+    db.session.commit()
      
     if request.method == "POST":
         webhook_json_string = str(request.json)
@@ -44,11 +48,6 @@ def webhook_endpoint():
         #     return "<h1>{}</h1>".format(str([i.messagebird_request_string for i in WebhookMessage.query.all()]))
             # message_updated_handler(client, webhook_json_string)
 
-
-        webhookOBJ = WebhookMessage()
-        webhookOBJ.messagebird_request_string = webhook_json_string
-        db.session.add(webhookOBJ)
-        db.session.commit()
 
 
       
