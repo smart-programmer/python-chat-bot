@@ -27,7 +27,7 @@ def message_created_handler(client, webhook_json_string):
     # handle message result
     # if we know contact then do this if he got a session then complete and so on
     # if customer first incounter create a conversation session and if not pull conversation session
-    contact = ContactModel.query.filter(ContactModel.number==str(contact.number), ContactModel.channel_id==channel.id).first() # RESEARCH multiple filters
+    contact = ContactModel.query.filter(ContactModel.number==str(contactObj.number), ContactModel.channel_id==channel.id).first() # RESEARCH multiple filters
     if contact:
         # determan layout name
         conversation_session = contact.session
