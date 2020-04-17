@@ -15,6 +15,7 @@ def new_contact_layout(client, conversation_session): # new_contact_layout shoul
         db.session.commit() 
         return False
     elif conversation_session.step_counter == 1:
+        show_text_process(client, "نعم, لا", conversation_session)
         contact.name = message
         conversation_session.step_counter += 1
         db.session.commit()
