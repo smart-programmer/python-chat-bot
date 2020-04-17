@@ -3,8 +3,6 @@ from messagebird.conversation_message import MESSAGE_TYPE_HSM, MESSAGE_TYPE_TEXT
 
 accessKey = "4LyuUQ5rrh2CT1Zwrql1hYuBW" # api key
 
-
-
 client = messagebird.Client('4LyuUQ5rrh2CT1Zwrql1hYuBW', features=[messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
 # print(client.request_plain_text("https://whatsapp-sandbox.messagebird.com/v1/conversations/8191d282593f49809be22df4394e4c0a/messages?limit=20"))
 # print(client.request_plain_text("https://whatsapp-sandbox.messagebird.com/v1/conversations/8191d282593f49809be22df4394e4c0a")) this returns type str
@@ -16,36 +14,36 @@ client = messagebird.Client('4LyuUQ5rrh2CT1Zwrql1hYuBW', features=[messagebird.F
 # print(client.message_list().items)
 
 webhook_request_dict = {
-    "events": ["message.created", "message.updated"],
+    "events": ["message.created", "message.updated"], # i guess message.updated is when a message turns from pending to read and like that
     "channelId": "7e4da85010004d32a1427e4a2edcee33",
     "url": "https://chatbo-webhook-endpoint.herokuapp.com/webhook"
   }
-client.conversation_create_webhook(webhook_request_dict)
-# print(client.conversation_list_webhooks())
+# client.conversation_create_webhook(webhook_request_dict)
+print(client.conversation_list_webhooks())
 # client.conversation_delete_webhook('139062c3875c4ac1a9706f4b9b3753ce')
 
 # first step start a conversation using an HSM
-conversation = client.conversation_start({
-  'channelId': '7e4da85010004d32a1427e4a2edcee33',
-  'to': '966503681868',
-  'type': MESSAGE_TYPE_HSM,
-  'content': {
-    'hsm': {
-      'namespace': '78b0f3fa_30cc_4cd3_b681_a9d1c794a7a4',
-      'templateName': 'support',
-      'language': {
-        'policy': 'deterministic',
-        'code': 'en'
-      },
-      'params': [
-        {"default": "Roberto"},
-        {"default": "123"},
-        {"default": "new coffee machine"},
-        {"default": "MessageBird, Trompenburgstraat 2C, 1079TX Amsterdam"},
-      ]
-    }
-  }
-})
+# conversation = client.conversation_start({
+#   'channelId': '7e4da85010004d32a1427e4a2edcee33',
+#   'to': '966503681868',
+#   'type': MESSAGE_TYPE_HSM,
+#   'content': {
+#     'hsm': {
+#       'namespace': '78b0f3fa_30cc_4cd3_b681_a9d1c794a7a4',
+#       'templateName': 'support',
+#       'language': {
+#         'policy': 'deterministic',
+#         'code': 'en'
+#       },
+#       'params': [
+#         {"default": "Roberto"},
+#         {"default": "123"},
+#         {"default": "new coffee machine"},
+#         {"default": "MessageBird, Trompenburgstraat 2C, 1079TX Amsterdam"},
+#       ]
+#     }
+#   }
+# })
 
 # print(client.conversation_list_messages("8191d282593f49809be22df4394e4c0a", limit=20))
 
@@ -95,11 +93,13 @@ conversation = client.conversation_start({
 
 msg = client.conversation_create_message('8191d282593f49809be22df4394e4c0a', {
   'channelId': '7e4da85010004d32a1427e4a2edcee33',
-  'type': MESSAGE_TYPE_TEXT,
+  'type': MESSAGE_TYPE_TEXT, 
   'content': {
-    'text': 'dwadw'
+    'text': "هلاااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااا"
   }
 })
+
+
 
 
 #response
