@@ -39,7 +39,11 @@ def webhook_endpoint():
     db.session.commit()
      
     if request.method == "POST":
-        webhook_json_string = str(request.json)
+        webhook_json_string = request.json
+        webhookOBJ = WebhookMessage()
+        webhookOBJ.messagebird_request_string = webhook_json_string
+        db.session.add(webhookOBJ)
+        db.session.commit()
         webhook_parsed_string = json.loads(webhook_json_string)
         if webhook_parsed_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_CREATED:
             message_created_handler(client, webhook_json_string)
