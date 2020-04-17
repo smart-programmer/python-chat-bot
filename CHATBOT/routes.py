@@ -6,6 +6,7 @@ from flask_login import current_user, login_user, login_required, logout_user
 from CHATBOT.webhook_handlers import message_created_handler, message_updated_handler
 from messagebird import conversation_webhook
 from messagebird import Client
+from messagebird.Feature import ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX
 import json
 
 
@@ -29,7 +30,7 @@ def webhook():
 
 @app.route('/webhook', methods=['GET', 'POST']) 
 def webhook_endpoint():
-    client = Client(message_bird_api_access_key, features=[messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
+    client = Client(message_bird_api_access_key, features=[ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
 
     # handle incoming message
      
