@@ -25,7 +25,7 @@ def new_contact_layout(client, conversation_session): # new_contact_layout shoul
         else:
             show_text_process(client, "السلام عليكم ورحمة الله وبركاته اهلا وسهلا بك في بوت المساند, الرجاء ادخال الاسم للبدء", conversation_session)
             db.session.delete(conversation_session)
-            db.delete.delete(contact)
+            db.session.delete(contact)
             conversation_session.counter = 1 # means redo registration
             db.session.commit()
         return False
