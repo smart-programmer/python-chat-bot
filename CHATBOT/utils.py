@@ -9,6 +9,7 @@ def set_object_field(name, parsed_json):
 def reset_conversation_session(conversation_session): # maybe also delete conversationObj_id if it changes over time
     conversation_session.layout_name = None
     conversation_session.step_number = 0
-    db.session.delete(conversation_session.arguments)
+    if conversation_session.arguments:
+        db.session.delete(conversation_session.arguments)
     conversation_session.arguments = None
     db.session.commit()
