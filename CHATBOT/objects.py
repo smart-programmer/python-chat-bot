@@ -1,4 +1,4 @@
-from CHATBOT import utils
+from CHATBOT.utils import set_object_field
 import json
 
 # messagebird objects 
