@@ -1,4 +1,4 @@
-import db
+from CHATBOT import db
 from messagebird import conversation_message 
 
 # layout processes are reuseable functions and are the building blocks of layouts

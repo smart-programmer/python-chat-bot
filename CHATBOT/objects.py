@@ -1,5 +1,4 @@
 from CHATBOT import utils
-from CHATBOT import json_prsers
 import json
 
 # messagebird objects 
@@ -32,7 +31,7 @@ class ChannelObj():
 
 class ConversationObj():
     def __init__(self, parsed_json):
-        id = set_object_field("id", parsed_json)
+        self.id = set_object_field("id", parsed_json)
 
 
 

@@ -1,5 +1,5 @@
 import json
-from CHATBOT.objects import ChannelObj, ConversationObj, MessageObj, MessageContentObj, ContactObj, HSMObj
+from CHATBOT.objects import ConversationObj, MessageObj, MessageContentObj, ContactObj, HSMObj
 
 # a parser parses a json object then returns it's python object
 

@@ -47,7 +47,6 @@ class ConversationSessionArgModel(db.Model):
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-class 
 
 
 class MenueModel(db.Model): # a model that stores bot possible procedures (every customer creates there own menues)

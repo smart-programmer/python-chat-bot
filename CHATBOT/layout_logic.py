@@ -35,7 +35,7 @@ def show_menue_layout(client, conversation_session): # a menue could be implemen
     menues = MenueModel.query.filter_by(channel_id=conversation_session.contact.channel.id)
     menue_string = ""
     for menue in menues:
-        menue_string += menue.command =+ " - " += menue.description += "\n"
+        menue_string += menue.command + " - " + menue.description + "\n"
     show_text_process(client, menue_string, conversation_session)
 
 def show_products_prices_layout(conversation_session):

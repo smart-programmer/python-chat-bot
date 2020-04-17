@@ -3,9 +3,10 @@ from flask_mail import Message as MailMessage
 from CHATBOT import app, db, bcrypt, mail, MAIL_USERNAME
 from CHATBOT.models import WebhookMessage
 from flask_login import current_user, login_user, login_required, logout_user
-from webhook_handlers import message_created_handler, message_updated_handler
+from CHATBOT.webhook_handlers import message_created_handler, message_updated_handler
 from messagebird import conversation_webhook
 from messagebird import Client
+import json
 
 
 
@@ -34,8 +35,14 @@ def webhook_endpoint():
      
     if request.method == "POST":
         webhook_json_string = str(request.json)
-        if webhook_json_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_CREATED:
+        webhook_parsed_string = json.loads(webhook_json_string)
+        if webhook_parsed_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_CREATED:
             message_created_handler(client, webhook_json_string)
+
+        elif webhook_parsed_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_UPDATED:
+            return "<h1>{}</h1>".format(str([i.messagebird_request_string for i in WebhookMessage.query.all()]))
+            # message_updated_handler(client, webhook_json_string)
+
 
         webhookOBJ = WebhookMessage()
         webhookOBJ.messagebird_request_string = webhook_json_string
@@ -43,7 +50,6 @@ def webhook_endpoint():
         db.session.commit()
 
 
-        elif webhook_json_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_UPDATED:
-            message_updated_handler(client, webhook_json_string)
+      
 
     return "<h1>{}</h1>".format(str([i.messagebird_request_string for i in WebhookMessage.query.all()]))

@@ -1,6 +1,6 @@
 from messagebird import Client
 from CHATBOT import db
-from CHATBOT.objects import ChannelObj, ConversationObj, MessageObj, MessageContentObj, ContactObj, HSMObj
+from CHATBOT.objects import ConversationObj, MessageObj, MessageContentObj, ContactObj, HSMObj
 from CHATBOT.models import ConversationSessionModel, ContactModel, ChannelModel, MenueModel, LayoutModel, ConversationSessionArgModel
 import json
 from CHATBOT.layout_logic import new_contact_layout, static_layout, command_not_exists_layout
@@ -55,7 +55,7 @@ def message_created_handler(client, webhook_json_string):
             # this is like an event layout the customer provides data (in this case what times are free) then we show that data to the user and then the user registers for a given hour with his information then we send a message to a given number that a user has registred or a given date (this only has 1 problem which is that the customer has to prvide which information the user should provide for each appointment) 
             pass
             
-        elif layout_name == None
+        elif layout_name == None:
             finished = show_menue_layout(client, conversation_session)
             if finished:
                 reset_conversation_session(conversation_session)
