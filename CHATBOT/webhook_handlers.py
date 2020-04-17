@@ -3,7 +3,7 @@ from CHATBOT import db
 from CHATBOT.objects import ConversationObj, MessageObj, MessageContentObj, ContactObj, HSMObj
 from CHATBOT.models import ConversationSessionModel, ContactModel, ChannelModel, MenueModel, LayoutModel, ConversationSessionArgModel
 import json
-from CHATBOT.layout_logic import new_contact_layout, static_layout, command_not_exists_layout
+from CHATBOT.layout_logic import new_contact_layout, static_layout, command_not_exists_layout, show_menue_layout
 from CHATBOT.utils import reset_conversation_session
 # webhook logic handelrs
 
