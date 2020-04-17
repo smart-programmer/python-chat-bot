@@ -13,14 +13,14 @@ def message_created_handler(client, webhook_json_string):
     # don't forget to write the logic that determans if it's a message from a contact or from us 
     # don't forget to make this platform specefic because if don't customers will own the same bot for all platforms
     
-    messageObj = MessageObj(json.loads(webhook_json_string))
+    messageObj = MessageObj(json.loads(webhook_json_string)["message"])
     if messageObj.direction == "sent":
         return
     message = messageObj.content["text"]
     if not message:
         return
-    contactObj = ContactObj(json.loads(webhook_json_string))
-    conversationObj = ConversationObj(json.loads(webhook_json_string)) # COMPLETE
+    contactObj = ContactObj(json.loads(webhook_json_string)["contact"])
+    conversationObj = ConversationObj(json.loads(webhook_json_string)["conversation"]) # COMPLETE
     channelObj_id = messageObj.channelId
     channel = ChannelModel.query.filter_by(channelObj_id=channelObj_id).first()
 
