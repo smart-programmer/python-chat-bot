@@ -22,7 +22,7 @@ class ChannelModel(db.Model):# everything that's channel specific needs to have 
 class ContactModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     number = db.Column(db.String(20), nullable=False)
-    channel_id = db.Column(db.Integer, db.ForeignKey("channelmodel.id"), nullable=False)
+    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
     name = db.Column(db.String(255))
     session = db.relationship("ConversationSessionModel", backref="contact", uselist=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
