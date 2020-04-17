@@ -32,7 +32,7 @@ def webhook_endpoint():
 
     # handle incoming message
      
-     if request.method == "POST":
+    if request.method == "POST":
         webhook_json_string = str(request.json)
         if webhook_json_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_CREATED:
             message_created_handler(client, webhook_json_string)
