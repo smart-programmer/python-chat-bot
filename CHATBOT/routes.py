@@ -27,7 +27,7 @@ def webhook():
     return "<h1>{}</h1>".format(str([i.messagebird_request_string for i in WebhookMessage.query.all()]))
 
 
-@app.route('/webhook') 
+@app.route('/webhook', methods=['GET', 'POST']) 
 def webhook_endpoint():
     client = Client(message_bird_api_access_key, features=[messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
 
