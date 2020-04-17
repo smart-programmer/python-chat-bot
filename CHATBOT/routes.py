@@ -36,7 +36,7 @@ def webhook_endpoint():
    
      
     if request.method == "POST":
-        webhook_json_string = request.json
+        webhook_json_string = json.dumps(request.json)
         webhookOBJ = WebhookMessage()
         webhookOBJ.messagebird_request_string = webhook_json_string
         db.session.add(webhookOBJ)
