@@ -3,7 +3,7 @@ from CHATBOT import db
 def set_object_field(name, parsed_json):
 
     if parsed_json != None:
-        return parsed_json[name] if name in parsed_json[name] else None
+        return parsed_json[name] if name in parsed_json else None
     return None
 
 def reset_conversation_session(conversation_session): # maybe also delete conversationObj_id if it changes over time
