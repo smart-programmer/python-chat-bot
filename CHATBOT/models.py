@@ -33,7 +33,7 @@ class ConversationSessionModel(db.Model):
     step_counter = db.Column(db.Integer, nullable=False, default=0)
     layout_name = db.Column(db.String(15))
     conversationObj_id = db.Column(db.String(40), nullable=False)
-    contact_id = db.Column(db.Integer, db.ForeignKey("contactmodel.id"), nullable=False)
+    contact_id = db.Column(db.Integer, db.ForeignKey("contact_model.id"), nullable=False)
     message = db.Column(db.Text, nullable=False)
     arguments = db.relationship("ConversationSessionArgModel", backref="session") # to carry out information for layouts
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -43,7 +43,7 @@ class ConversationSessionArgModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     argument_name = db.Column(db.String(30), nullable=False)
     argument_value = db.Column(db.String(200), nullable=False)
-    session_id = db.Column(db.Integer, db.ForeignKey("conversationsessionmodel.id"), nullable=False)
+    session_id = db.Column(db.Integer, db.ForeignKey("conversation_session_model.id"), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -51,7 +51,7 @@ class ConversationSessionArgModel(db.Model):
 
 class MenueModel(db.Model): # a model that stores bot possible procedures (every customer creates there own menues)
     id = db.Column(db.Integer, primary_key=True)
-    channel_id = db.Column(db.Integer, db.ForeignKey("channelmodel.id"), nullable=False)
+    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
     layout_name = db.Column(db.String(30), nullable=False) # this isn't a database relationship because we don't want the LayoutModel to store all customer's menues
     command = db.Column(db.String(20), nullable=False)
     descritption = db.Column(db.String(150), nullable=False)
@@ -72,7 +72,7 @@ class ViewableObjectModel(db.Model): # insted of creating a model for every layo
     id = db.Column(db.Integer, primary_key=True) # if a layout model needs a complex attribute we can always create a new Model for it and create a one way relation where the attribute has the layout_model id but the layout_model doesn't know anything about the attrubute (just like requirements and prticipants)
     tag = db.Column(db.String(30), nullable=False)
     attributes = db.relationship("ViewableObjectAttribute", backref="viewable_object")
-    channel_id = db.Column(db.Integer, db.ForeignKey("channelmodel.id"), nullable=False)
+    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
 
@@ -83,7 +83,7 @@ class ViewableObjectAttribute(db.Model):
     name = db.Column(db.String(30), nullable=False) 
     # value = db.relationship("ViewableObjectAttributeValue", backref="attribute", uselist=False)
     value = db.Column(db.Text, nullable=False)
-    viewable_object_id = db.Column(db.Integer, db.ForeignKey("viewableobjectmodel.id"), nullable=False)
+    viewable_object_id = db.Column(db.Integer, db.ForeignKey("viewable_object_model.id"), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
 
@@ -116,7 +116,7 @@ class ParticipantModel():
 class ParticipantInformationModel():
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.Text, nullable=False)
-    participant_id = db.Column(db.Integer, db.ForeignKey("participantmodel.id"), nullable=False)
+    participant_id = db.Column(db.Integer, db.ForeignKey("participant_model.id"), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -132,7 +132,7 @@ class OfferModel():
     message = db.Column(db.String(500), nullable=False) 
     start_date = db.Column(db.String(100), nullable=False) 
     end_date = db.Column(db.String(100), nullable=False) 
-    channel_id = db.Column(db.Integer, db.ForeignKey("channelmodel.id"), nullable=False)
+    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
 
@@ -141,7 +141,7 @@ class ServiceModel():
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(300), nullable=False) 
     price = db.Column(db.Integer, nullable=False) 
-    channel_id = db.Column(db.Integer, db.ForeignKey("channelmodel.id"), nullable=False)
+    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -152,7 +152,7 @@ class AppointmentModel(): # participtable layout which means it must have a rela
     title = db.Column(db.String(500), nullable=False) 
     state = db.Column(db.String(100), nullable=False) 
     end_date = db.Column(db.String(100), nullable=False) 
-    channel_id = db.Column(db.Integer, db.ForeignKey("channelmodel.id"), nullable=False)
+    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
