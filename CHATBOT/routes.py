@@ -18,7 +18,7 @@ from messagebird.conversation_message import MESSAGE_TYPE_HSM, MESSAGE_TYPE_TEXT
 message_bird_api_access_key = "4LyuUQ5rrh2CT1Zwrql1hYuBW"
 
 
-@app.route('/webhook', methods=['GET', 'POST']) # note this needs to handle PUT(update)
+@app.route('/webhooks', methods=['GET', 'POST']) # note this needs to handle PUT(update)
 def webhook():
     if request.method == "POST":
         webhook_json_string = str(request.json) # https://stackoverflow.com/questions/10434599/get-the-data-received-in-a-flask-request
@@ -40,7 +40,7 @@ def webhook():
     return "<h1>{}</h1>".format(str([i.messagebird_request_string for i in WebhookMessage.query.all()]))
 
 
-@app.route('/webhooks', methods=['GET', 'POST']) 
+@app.route('/webhook', methods=['GET', 'POST']) 
 def webhook_endpoint():
     client = messagebird.Client('4LyuUQ5rrh2CT1Zwrql1hYuBW', features=[messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
 
