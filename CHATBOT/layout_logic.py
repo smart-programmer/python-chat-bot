@@ -37,7 +37,7 @@ def show_menue_layout(client, conversation_session): # a menue could be implemen
     menue_string = "hey\n"
     for menue in menues:
         menue_string += menue.command + " - " + menue.description + "\n"
-    show_text_process(client, "helooooo", conversation_session)
+    show_text_process(client, menue_string, conversation_session)
 
 def show_products_prices_layout(conversation_session):
 
