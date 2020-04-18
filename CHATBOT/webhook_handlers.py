@@ -40,7 +40,7 @@ def message_created_handler(client, webhook_json_string):
                 command_not_exists_layout(client, conversation_session) # COMPLETE
                 show_menue_layout(client, conversation_session)
                 return
-            layout_name = LayoutModel.query.filter_by(name=menue.layout_name).first() # simple: look for the layout of the menue that the user picked for example if he picked from the menue command number 4 we search for which layout command number 4 should follow
+            layout_name = LayoutModel.query.filter_by(name=menue.layout_name).first().name # simple: look for the layout of the menue that the user picked for example if he picked from the menue command number 4 we search for which layout command number 4 should follow
 
         # handle conversation depending on the message layout
         if layout_name == "new_contact":
@@ -56,9 +56,8 @@ def message_created_handler(client, webhook_json_string):
             pass
             
         elif layout_name == None:
-            finished = show_menue_layout(client, conversation_session)
-            if finished:
-                reset_conversation_session(conversation_session)
+            show_menue_layout(client, conversation_session)
+            reset_conversation_session(conversation_session)
             return
     else:
         # handle new contact create a session and a contact and add him to the right channel
