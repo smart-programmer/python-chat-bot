@@ -1,5 +1,5 @@
 from CHATBOT import db
-import time
+
 
 from messagebird.conversation_message import MESSAGE_TYPE_HSM, MESSAGE_TYPE_TEXT
 
@@ -15,8 +15,8 @@ def show_text_process(client, text, conversation_session):
         'channelId': channelObj_id,
         'type': MESSAGE_TYPE_TEXT, 
         'content': {
-            'text': text
+            'text': text # text can't be an empty string like this "" or it will fail
         }
     })
-    time.sleep(2)
+
   
