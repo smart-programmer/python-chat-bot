@@ -1,5 +1,5 @@
 from CHATBOT import db
-from CHATBOT.layout_processes import *
+from CHATBOT.layout_processes import show_text_process
 from CHATBOT.models import MenueModel
 # define layouts logic
 
