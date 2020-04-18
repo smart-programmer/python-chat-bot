@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, url_for, make_response
+from flask import Flask, request, redirect, render_template, url_for, make_response, jsonify
 from flask_mail import Message as MailMessage
 from CHATBOT import app, db, bcrypt, mail, MAIL_USERNAME
 from CHATBOT.models import WebhookMessage
@@ -8,6 +8,7 @@ from messagebird import conversation_webhook
 from messagebird import Client
 import messagebird
 import json
+
 
 
 
@@ -44,6 +45,8 @@ def webhook_endpoint():
         webhook_parsed_string = json.loads(webhook_json_string)
         if webhook_parsed_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_CREATED:
             message_created_handler(client, webhook_json_string)
+            resp = jsonify(success=True)
+            return resp
 
         # elif webhook_parsed_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_UPDATED:
         #     return "<h1>{}</h1>".format(str([i.messagebird_request_string for i in WebhookMessage.query.all()]))
