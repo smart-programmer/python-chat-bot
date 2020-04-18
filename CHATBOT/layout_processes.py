@@ -14,7 +14,7 @@ def show_text_process(client, text, conversation_session):
         'channelId': channelObj_id,
         'type': MESSAGE_TYPE_TEXT, 
         'content': {
-            'text': "str(text)"
+            'text': text
         }
     })
   
