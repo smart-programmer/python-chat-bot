@@ -25,6 +25,7 @@ def webhook():
         webhookOBJ.messagebird_request_string = webhook_json_string
         db.session.add(webhookOBJ)
         db.session.commit()
+        client = Client(message_bird_api_access_key, features=[messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
         msg = client.conversation_create_message('8191d282593f49809be22df4394e4c0a', {
   'channelId': '7e4da85010004d32a1427e4a2edcee33',
   'type': MESSAGE_TYPE_TEXT, 
