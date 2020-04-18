@@ -42,7 +42,7 @@ def webhook():
 
 @app.route('/webhooks', methods=['GET', 'POST']) 
 def webhook_endpoint():
-    client = Client(message_bird_api_access_key, features=[messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
+    client = messagebird.Client('4LyuUQ5rrh2CT1Zwrql1hYuBW', features=[messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
 
     # handle incoming message
    
@@ -54,8 +54,9 @@ def webhook_endpoint():
         db.session.add(webhookOBJ)
         db.session.commit()
         webhook_parsed_string = json.loads(webhook_json_string)
-        if webhook_parsed_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_CREATED:
-            message_created_handler(client, webhook_json_string)
+        if webhook_parsed_string["type"] == "message.created":
+            if not request.json["message"]["direction"] == "sent":
+                message_created_handler(client, webhook_json_string)
 
 
         # elif webhook_parsed_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_UPDATED:
