@@ -49,7 +49,7 @@ def static_layout(conversation_session):
 
 def command_not_exists_layout(client, conversation_session):
     # to do
-    show_text_process(client, "لا يوجد هذا الامر", conversation_session)
+    show_text_process(client, "no such command exists", conversation_session)
 
 
 def event_layout(conversation_session):
