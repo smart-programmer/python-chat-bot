@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, url_for, make_response, jsonify
+from flask import Flask, request, redirect, render_template, url_for, make_response
 from flask_mail import Message as MailMessage
 from CHATBOT import app, db, bcrypt, mail, MAIL_USERNAME
 from CHATBOT.models import WebhookMessage
@@ -17,7 +17,7 @@ import json
 message_bird_api_access_key = "4LyuUQ5rrh2CT1Zwrql1hYuBW"
 
 
-@app.route('/webhooks', methods=['GET', 'POST']) # note this needs to handle PUT(update)
+@app.route('/webhook', methods=['GET', 'POST']) # note this needs to handle PUT(update)
 def webhook():
     if request.method == "POST":
         webhook_json_string = str(request.json) # https://stackoverflow.com/questions/10434599/get-the-data-received-in-a-flask-request
@@ -29,7 +29,7 @@ def webhook():
     return "<h1>{}</h1>".format(str([i.messagebird_request_string for i in WebhookMessage.query.all()]))
 
 
-@app.route('/webhook', methods=['GET', 'POST']) 
+@app.route('/webhooks', methods=['GET', 'POST']) 
 def webhook_endpoint():
     client = Client(message_bird_api_access_key, features=[messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
 
@@ -45,8 +45,7 @@ def webhook_endpoint():
         webhook_parsed_string = json.loads(webhook_json_string)
         if webhook_parsed_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_CREATED:
             message_created_handler(client, webhook_json_string)
-            resp = jsonify(success=True)
-            return resp
+
 
         # elif webhook_parsed_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_UPDATED:
         #     return "<h1>{}</h1>".format(str([i.messagebird_request_string for i in WebhookMessage.query.all()]))
