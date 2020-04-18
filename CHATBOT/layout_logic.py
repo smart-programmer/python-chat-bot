@@ -33,11 +33,11 @@ def new_contact_layout(client, conversation_session): # new_contact_layout shoul
     return False
 
 def show_menue_layout(client, conversation_session): # a menue could be implemented by the ViewableObject model insted of a MenueModel
-    menues = MenueModel.query.filter_by(channel_id=conversation_session.contact.channel.id)
-    menue_string = ""
-    for menue in menues:
-        menue_string += menue.command + " - " + menue.description + "\n"
-    show_text_process(client, menue_string, conversation_session)
+    # menues = MenueModel.query.filter_by(channel_id=conversation_session.contact.channel.id)
+    # menue_string = ""
+    # for menue in menues:
+    #     menue_string += menue.command + " - " + menue.description + "\n"
+    show_text_process(client, "helooooo", conversation_session)
 
 def show_products_prices_layout(conversation_session):
 
