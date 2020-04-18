@@ -8,6 +8,7 @@ from messagebird import conversation_webhook
 from messagebird import Client
 import messagebird
 import json
+from messagebird.conversation_message import MESSAGE_TYPE_HSM, MESSAGE_TYPE_TEXT
 
 
 
