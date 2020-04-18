@@ -25,6 +25,13 @@ def webhook():
         webhookOBJ.messagebird_request_string = webhook_json_string
         db.session.add(webhookOBJ)
         db.session.commit()
+        msg = client.conversation_create_message('8191d282593f49809be22df4394e4c0a', {
+  'channelId': '7e4da85010004d32a1427e4a2edcee33',
+  'type': MESSAGE_TYPE_TEXT, 
+  'content': {
+    'text': "هلاااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااا"
+  }
+})
 
     return "<h1>{}</h1>".format(str([i.messagebird_request_string for i in WebhookMessage.query.all()]))
 
