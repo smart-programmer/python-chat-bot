@@ -27,14 +27,15 @@ def webhook():
         db.session.add(webhookOBJ)
         db.session.commit()
         client = messagebird.Client('4LyuUQ5rrh2CT1Zwrql1hYuBW', features=[messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
-        if not request.json["type"] == "sent":
-            msg = client.conversation_create_message('8191d282593f49809be22df4394e4c0a', {
-    'channelId': '7e4da85010004d32a1427e4a2edcee33',
-    'type': MESSAGE_TYPE_TEXT, 
-    'content': {
-        'text': "هلاااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااا"
-    }
-})
+        if request.json["type"] == "message.created":
+            if not request.json["message"]["direction"] == "sent":
+                msg = client.conversation_create_message('8191d282593f49809be22df4394e4c0a', {
+        'channelId': '7e4da85010004d32a1427e4a2edcee33',
+        'type': MESSAGE_TYPE_TEXT, 
+        'content': {
+            'text': "هلاااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااا"
+        }
+    })
 
     return "<h1>{}</h1>".format(str([i.messagebird_request_string for i in WebhookMessage.query.all()]))
 
