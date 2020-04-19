@@ -15,7 +15,7 @@ def new_contact_layout(client, conversation_session): # new_contact_layout shoul
         db.session.commit() 
         return False
     elif conversation_session.step_counter == 1:
-        show_text_process(client, "نعم, لا", conversation_session)
+        show_text_process(client, "?هل تريد الاكمال بالاسم {}".format(message), conversation_session)
         contact.name = message
         conversation_session.step_counter += 1
         db.session.commit()
@@ -24,7 +24,7 @@ def new_contact_layout(client, conversation_session): # new_contact_layout shoul
         if (message == "نعم"):
             return True
         else:
-            show_text_process(client, "السلام عليكم ورحمة الله وبركاته اهلا وسهلا بك في بوت المساند, الرجاء ادخال الاسم للبدء", conversation_session)
+            show_text_process(client, "تم حذف الاسم رجاء اعد التسجيل".format(message), conversation_session)
             db.session.delete(conversation_session)
             db.session.delete(contact)
             db.session.commit()
