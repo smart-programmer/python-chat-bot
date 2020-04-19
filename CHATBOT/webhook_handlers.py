@@ -4,7 +4,7 @@ from CHATBOT.objects import ConversationObj, MessageObj, MessageContentObj, Cont
 from CHATBOT.models import ConversationSessionModel, ContactModel, ChannelModel, MenueModel, LayoutModel, ConversationSessionArgModel
 import json
 from CHATBOT.layout_logic import new_contact_layout, static_layout, command_not_exists_layout, show_menue_layout
-from CHATBOT.utils import reset_conversation_session
+from CHATBOT.utils import reset_conversation_session, update_session_message
 # webhook logic handelrs
 
 
@@ -31,6 +31,7 @@ def message_created_handler(client, webhook_json_string):
     if contact:
         # determan layout name
         conversation_session = contact.session
+        update_session_message(message, conversation_session)
         menue = MenueModel.query.filter(MenueModel.command==message, MenueModel.channel_id==channel.id).first() # RESEARCH multiple filters # this has to change when we handle other content types in the future
         layout_name = None
         if conversation_session.layout_name != None:

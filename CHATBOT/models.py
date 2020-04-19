@@ -33,7 +33,7 @@ class ConversationSessionModel(db.Model):
     step_counter = db.Column(db.Integer, nullable=False, default=0)
     layout_name = db.Column(db.String(15))
     conversationObj_id = db.Column(db.String(40), nullable=False)
-    contact_id = db.Column(db.Integer, db.ForeignKey("contact_model.id"), nullable=False)
+    contact_id = db.Column(db.Integer, db.ForeignKey("contact_model.id"))
     message = db.Column(db.Text, nullable=False)
     arguments = db.relationship("ConversationSessionArgModel", backref="session", cascade="all,delete") # to carry out information for layouts
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

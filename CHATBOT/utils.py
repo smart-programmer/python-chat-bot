@@ -14,3 +14,8 @@ def reset_conversation_session(conversation_session): # maybe also delete conver
             db.session.delete(arg)
     conversation_session.arguments.clear()
     db.session.commit()
+
+
+def update_session_message(message, conversation_session):
+    conversation_session.message = message
+    db.session.commit()
