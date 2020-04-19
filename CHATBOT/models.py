@@ -54,7 +54,7 @@ class MenueModel(db.Model): # a model that stores bot possible procedures (every
     channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
     layout_name = db.Column(db.String(30), nullable=False) # this isn't a database relationship because we don't want the LayoutModel to store all customer's menues
     command = db.Column(db.String(20), nullable=False)
-    description = db.Column(db.String(150), nullable=False)
+    descritption = db.Column(db.String(150), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
        
