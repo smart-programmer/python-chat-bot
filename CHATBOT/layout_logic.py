@@ -24,7 +24,7 @@ def new_contact_layout(client, conversation_session): # new_contact_layout shoul
         if (message == "نعم"):
             return True
         else:
-            show_text_process(client, "تم حذف الاسم رجاء اعد التسجيل".format(message), conversation_session)
+            show_text_process(client, "تم حذف الاسم رجاء اعد التسجيل", conversation_session)
             db.session.delete(conversation_session)
             db.session.delete(contact)
             db.session.commit()
