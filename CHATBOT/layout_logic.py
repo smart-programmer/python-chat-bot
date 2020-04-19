@@ -1,6 +1,6 @@
 from CHATBOT import db
 from CHATBOT.layout_processes import show_text_process
-from CHATBOT.models import MenueModel
+from CHATBOT.models import MenueModel, ViewableObjectModel, ViewableObjectAttribute
 # define layouts logic
 
 
@@ -15,7 +15,7 @@ def new_contact_layout(client, conversation_session): # new_contact_layout shoul
         db.session.commit() 
         return False
     elif conversation_session.step_counter == 1:
-        show_text_process(client, "?هل تريد الاكمال بالاسم {}".format(message), conversation_session)
+        show_text_process(client, "هل تريد الاكمال بالاسم {} ؟ نعم,لا".format(message), conversation_session)
         contact.name = message
         conversation_session.step_counter += 1
         db.session.commit()
@@ -38,12 +38,13 @@ def show_menue_layout(client, conversation_session): # a menue could be implemen
         menue_string += menue.command + " - " + menue.description + "\n"
     show_text_process(client, menue_string, conversation_session)
 
-def show_products_prices_layout(conversation_session):
+def show_products_prices_layout(client, conversation_session): # steps: 1- create layout Model 2- create menue with the layout 3- create viewable objects if needed step 4- write logic
+    viewable_objects = ViewableObjectModel.query.filter_by(tag="show_products_prices", channel=conversation_session.channel)
+    for vb in viewable_objects:
+        show_text_process(client, conversation_session)
+    return True
 
-    pass
-
-def static_layout(conversation_session):
-    # to do
+def static_layout(client, conversation_session):
     pass
 
 def command_not_exists_layout(client, conversation_session):
