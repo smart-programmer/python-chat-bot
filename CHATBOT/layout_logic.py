@@ -35,7 +35,7 @@ def show_menue_layout(client, conversation_session): # a menue could be implemen
     menues = MenueModel.query.filter_by(channel_id=conversation_session.contact.channel.id)
     menue_string = "hey\n"
     for menue in menues:
-        menue_string += menue.command + " - " + menue.description + "\n"
+        menue_string += menue.command + " - " + menue.descritption + "\n"
     show_text_process(client, menue_string, conversation_session)
 
 def show_products_prices_layout(client, conversation_session): # steps: 1- create layout Model 2- create menue with the layout 3- create viewable objects if needed step 4- write logic
