@@ -12,9 +12,9 @@ class WebhookMessage(db.Model):
 class ChannelModel(db.Model):# everything that's channel specific needs to have a relationship with ChannelModel
     id = db.Column(db.Integer, primary_key=True)
     channelObj_id = db.Column(db.String(50), nullable=False)
-    contacts = db.relationship("ContactModel", backref="channel")
-    menues = db.relationship("MenueModel", backref="channel")
-    viewable_objects = db.relationship("ViewableObjectModel", backref="channel")
+    contacts = db.relationship("ContactModel", cascade="all,delete", backref="channel")
+    menues = db.relationship("MenueModel", backref="channel", cascade="all,delete")
+    viewable_objects = db.relationship("ViewableObjectModel", backref="channel", cascade="all,delete")
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -24,7 +24,7 @@ class ContactModel(db.Model):
     number = db.Column(db.String(20), nullable=False)
     channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
     name = db.Column(db.String(255))
-    session = db.relationship("ConversationSessionModel", backref="contact", uselist=False)
+    session = db.relationship("ConversationSessionModel", backref="contact", uselist=False, cascade="all,delete")
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -35,7 +35,7 @@ class ConversationSessionModel(db.Model):
     conversationObj_id = db.Column(db.String(40), nullable=False)
     contact_id = db.Column(db.Integer, db.ForeignKey("contact_model.id"), nullable=False)
     message = db.Column(db.Text, nullable=False)
-    arguments = db.relationship("ConversationSessionArgModel", backref="session") # to carry out information for layouts
+    arguments = db.relationship("ConversationSessionArgModel", backref="session", cascade="all,delete") # to carry out information for layouts
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -71,7 +71,7 @@ class LayoutModel(db.Model): # represents how a command should be treated (we cr
 class ViewableObjectModel(db.Model): # insted of creating a model for every layout like OfferModel or StaticModel or EventModel we create a ViewableObjectModel object with that layout model attributes attached to it and a tag to indicate which layout this object reoresent for example object.tag = "event" and object.attributes == (event mdoel attributes) 
     id = db.Column(db.Integer, primary_key=True) # if a layout model needs a complex attribute we can always create a new Model for it and create a one way relation where the attribute has the layout_model id but the layout_model doesn't know anything about the attrubute (just like requirements and prticipants)
     tag = db.Column(db.String(30), nullable=False)
-    attributes = db.relationship("ViewableObjectAttribute", backref="viewable_object")
+    attributes = db.relationship("ViewableObjectAttribute", backref="viewable_object", cascade="all,delete")
     channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
@@ -109,7 +109,7 @@ class RequirementModel(db.Model):
 class ParticipantModel():
     id = db.Column(db.Integer, primary_key=True)
     viewable_object_id = db.Column(db.Integer, nullable=False)
-    information = db.relationship("ParticipantInformationModel", backref="participant")
+    information = db.relationship("ParticipantInformationModel", backref="participant", cascade="all,delete")
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
