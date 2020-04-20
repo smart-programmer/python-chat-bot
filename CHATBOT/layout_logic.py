@@ -40,8 +40,12 @@ def show_menue_layout(client, conversation_session): # a menue could be implemen
 
 def show_products_prices_layout(client, conversation_session): # steps: 1- create layout Model 2- create menue with the layout 3- create viewable objects if needed step 4- write logic
     viewable_objects = ViewableObjectModel.query.filter_by(tag="show_products_prices", channel=conversation_session.contact.channel)
+    string = "our products\n"
     for vb in viewable_objects:
-        show_text_process(client, conversation_session)
+        attribute = vb.attributes[0] # this should be a query of an attribute with the name product_name
+        string += "{} : {}".format(attribute.name, attribute.value)
+
+    show_text_process(client, string, conversation_session)
     return True
 
 def static_layout(client, conversation_session):
