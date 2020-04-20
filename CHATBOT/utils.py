@@ -19,3 +19,8 @@ def reset_conversation_session(conversation_session): # maybe also delete conver
 def update_session_message(message, conversation_session):
     conversation_session.message = message
     db.session.commit()
+
+def get_attribute(attributes_list, attribute_name):
+    for attrib in attributes_list:
+        if attrib.name == attribute_name:
+            return attrib.value

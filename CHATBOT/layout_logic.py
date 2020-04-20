@@ -1,6 +1,7 @@
 from CHATBOT import db
 from CHATBOT.layout_processes import show_text_process
 from CHATBOT.models import MenueModel, ViewableObjectModel, ViewableObjectAttribute
+from CHATBOT.utils import get_attribute
 # define layouts logic
 
 
@@ -42,8 +43,8 @@ def show_products_prices_layout(client, conversation_session): # steps: 1- creat
     viewable_objects = ViewableObjectModel.query.filter_by(tag="show_products_prices", channel=conversation_session.contact.channel)
     string = "our products\n"
     for vb in viewable_objects:
-        attribute = vb.attributes[0] # this should be a query of an attribute with the name product_name
-        string += "{} : {}".format(attribute.name, attribute.value)
+        attributes = vb.attributes # this should be a query of an attribute with the name product_name
+        string += "{} : {}".format(get_attribute(attributes, "product_name"), get_attribute(attributes, "product_price"))
 
     show_text_process(client, string, conversation_session)
     return True
