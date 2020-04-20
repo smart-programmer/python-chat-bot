@@ -44,7 +44,7 @@ def show_products_prices_layout(client, conversation_session): # steps: 1- creat
     string = "our products\n"
     for vb in viewable_objects:
         attributes = vb.attributes 
-        string += "{} : {}".format(get_attribute(attributes, "product_name"), get_attribute(attributes, "product_price"))
+        string += "{} : {}\n".format(get_attribute(attributes, "product_name"), get_attribute(attributes, "product_price"))
     show_text_process(client, string, conversation_session)
     return True
 
