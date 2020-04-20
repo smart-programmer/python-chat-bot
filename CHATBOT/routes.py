@@ -55,8 +55,7 @@ def webhook_endpoint():
         db.session.commit()
         webhook_parsed_string = json.loads(webhook_json_string)
         if request.json["type"] == "message.created":
-            if not request.json["message"]["direction"] == "sent":
-                message_created_handler(client, webhook_json_string)
+            message_created_handler(client, webhook_json_string)
 
 
         # elif webhook_parsed_string["type"] == conversation_webhook.CONVERSATION_WEBHOOK_EVENT_MESSAGE_UPDATED:
