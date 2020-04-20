@@ -40,7 +40,7 @@ def show_menue_layout(client, conversation_session): # a menue could be implemen
     show_text_process(client, menue_string, conversation_session)
 
 def show_products_prices_layout(client, conversation_session): # steps: 1- create layout Model 2- create menue with the layout 3- create viewable objects if needed step 4- write logic
-    viewable_objects = ViewableObjectModel.query.filter_by(tag="show_products_prices", channel=conversation_session.contact.channel)
+    viewable_objects = ViewableObjectModel.query.filter_by(layout_name=conversation_session.layout_name, channel=conversation_session.contact.channel)
     string = "our products\n"
     for vb in viewable_objects:
         attributes = vb.attributes 
@@ -52,7 +52,6 @@ def static_layout(client, conversation_session):
     pass
 
 def command_not_exists_layout(client, conversation_session):
-    # to do
     show_text_process(client, "no such command exists", conversation_session)
 
 

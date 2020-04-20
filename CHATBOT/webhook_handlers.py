@@ -32,16 +32,17 @@ def message_created_handler(client, webhook_json_string):
         # determan layout name
         conversation_session = contact.session
         update_session_message(message, conversation_session)
-        menue = MenueModel.query.filter(MenueModel.command==message, MenueModel.channel_id==channel.id).first() # RESEARCH multiple filters # this has to change when we handle other content types in the future
         layout_name = None
         if conversation_session.layout_name != None:
             layout_name = conversation_session.layout_name
         else:
+            menue = MenueModel.query.filter(MenueModel.command==message, MenueModel.channel_id==channel.id).first()
             if (not menue):
-                command_not_exists_layout(client, conversation_session) # COMPLETE
+                command_not_exists_layout(client, conversation_session) 
                 show_menue_layout(client, conversation_session)
                 return
             layout_name = LayoutModel.query.filter_by(name=menue.layout_name).first().name # simple: look for the layout of the menue that the user picked for example if he picked from the menue command number 4 we search for which layout command number 4 should follow
+            conversation_session.layout_name = layout_name
 
         # handle conversation depending on the message layout
         if layout_name == "new_contact":
