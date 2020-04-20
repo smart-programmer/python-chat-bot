@@ -34,18 +34,17 @@ def new_contact_layout(client, conversation_session): # new_contact_layout shoul
 
 def show_menue_layout(client, conversation_session): # a menue could be implemented by the ViewableObject model insted of a MenueModel
     menues = MenueModel.query.filter_by(channel_id=conversation_session.contact.channel.id)
-    menue_string = "hey\n"
+    menue_string = "menue\n\n"
     for menue in menues:
-        menue_string += menue.command + " - " + menue.descritption + "\n"
+        menue_string += menue.command + ": " + menue.description + "\n"
     show_text_process(client, menue_string, conversation_session)
 
 def show_products_prices_layout(client, conversation_session): # steps: 1- create layout Model 2- create menue with the layout 3- create viewable objects if needed step 4- write logic
     viewable_objects = ViewableObjectModel.query.filter_by(tag="show_products_prices", channel=conversation_session.contact.channel)
     string = "our products\n"
     for vb in viewable_objects:
-        attributes = vb.attributes # this should be a query of an attribute with the name product_name
+        attributes = vb.attributes 
         string += "{} : {}".format(get_attribute(attributes, "product_name"), get_attribute(attributes, "product_price"))
-
     show_text_process(client, string, conversation_session)
     return True
 

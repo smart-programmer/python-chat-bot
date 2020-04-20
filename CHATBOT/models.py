@@ -54,7 +54,7 @@ class MenueModel(db.Model): # a model that stores bot possible procedures (every
     channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
     layout_name = db.Column(db.String(30), nullable=False) # this isn't a database relationship because we don't want the LayoutModel to store all customer's menues
     command = db.Column(db.String(20), nullable=False)
-    descritption = db.Column(db.String(150), nullable=False) # MODIFY description
+    description = db.Column(db.String(150), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
        
@@ -63,7 +63,7 @@ class MenueModel(db.Model): # a model that stores bot possible procedures (every
 class LayoutModel(db.Model): # represents how a command should be treated (we create the layouts)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False, unique=True) # maybe make this the primary_key
-    # viewable_objects = db.relationship("ViewableObjectModel", backref="layout", cascade="all,delete")
+    viewable_objects = db.relationship("ViewableObjectModel", backref="layout", cascade="all,delete")
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
 
@@ -71,10 +71,9 @@ class LayoutModel(db.Model): # represents how a command should be treated (we cr
 
 class ViewableObjectModel(db.Model): # insted of creating a model for every layout like OfferModel or StaticModel or EventModel we create a ViewableObjectModel object with that layout model attributes attached to it and a tag to indicate which layout this object reoresent for example object.tag = "event" and object.attributes == (event mdoel attributes) 
     id = db.Column(db.Integer, primary_key=True) # if a layout model needs a complex attribute we can always create a new Model for it and create a one way relation where the attribute has the layout_model id but the layout_model doesn't know anything about the attrubute (just like requirements and prticipants)
-    tag = db.Column(db.String(30), nullable=False) # change this tag into a relationship with the layout model
     attributes = db.relationship("ViewableObjectAttribute", backref="viewable_object", cascade="all,delete")
     channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
-    # layout_id = db.Column(db.Integer, db.ForeignKey("layout_model.id"), nullable=False)# MODIFY description
+    layout_id = db.Column(db.Integer, db.ForeignKey("layout_model.id"), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
 
@@ -128,35 +127,35 @@ class ParticipantInformationModel():
 
 
 
-class OfferModel():
-    id = db.Column(db.Integer, primary_key=True)
-    image = db.Column(db.String(60), nullable=False) 
-    message = db.Column(db.String(500), nullable=False) 
-    start_date = db.Column(db.String(100), nullable=False) 
-    end_date = db.Column(db.String(100), nullable=False) 
-    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
-    create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+# class OfferModel():
+#     id = db.Column(db.Integer, primary_key=True)
+#     image = db.Column(db.String(60), nullable=False) 
+#     message = db.Column(db.String(500), nullable=False) 
+#     start_date = db.Column(db.String(100), nullable=False) 
+#     end_date = db.Column(db.String(100), nullable=False) 
+#     channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
+#     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+#     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
 
 
-class ServiceModel():
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(300), nullable=False) 
-    price = db.Column(db.Integer, nullable=False) 
-    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
-    create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+# class ServiceModel():
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(300), nullable=False) 
+#     price = db.Column(db.Integer, nullable=False) 
+#     channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
+#     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+#     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 
-class AppointmentModel(): # participtable layout which means it must have a relation with requirements and participants
-    id = db.Column(db.Integer, primary_key=True)
-    time = db.Column(db.String(60), nullable=False) 
-    title = db.Column(db.String(500), nullable=False) 
-    state = db.Column(db.String(100), nullable=False) 
-    end_date = db.Column(db.String(100), nullable=False) 
-    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
-    create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+# class AppointmentModel(): # participtable layout which means it must have a relation with requirements and participants
+#     id = db.Column(db.Integer, primary_key=True)
+#     time = db.Column(db.String(60), nullable=False) 
+#     title = db.Column(db.String(500), nullable=False) 
+#     state = db.Column(db.String(100), nullable=False) 
+#     end_date = db.Column(db.String(100), nullable=False) 
+#     channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
+#     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+#     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 
 
