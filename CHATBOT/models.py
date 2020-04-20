@@ -31,7 +31,7 @@ class ContactModel(db.Model):
 class ConversationSessionModel(db.Model): 
     id = db.Column(db.Integer, primary_key=True)
     step_counter = db.Column(db.Integer, nullable=False, default=0)
-    layout_name = db.Column(db.String(15))
+    layout_name = db.Column(db.String(50))
     conversationObj_id = db.Column(db.String(40), nullable=False)
     contact_id = db.Column(db.Integer, db.ForeignKey("contact_model.id"))
     message = db.Column(db.Text, nullable=False)
@@ -62,7 +62,7 @@ class MenueModel(db.Model): # a model that stores bot possible procedures (every
 
 class LayoutModel(db.Model): # represents how a command should be treated (we create the layouts)
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), nullable=False, unique=True) # maybe make this the primary_key
+    name = db.Column(db.String(50), nullable=False, unique=True) # maybe make this the primary_key
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
 
@@ -72,7 +72,7 @@ class ViewableObjectModel(db.Model): # insted of creating a model for every layo
     id = db.Column(db.Integer, primary_key=True) # if a layout model needs a complex attribute we can always create a new Model for it and create a one way relation where the attribute has the layout_model id but the layout_model doesn't know anything about the attrubute (just like requirements and prticipants)
     attributes = db.relationship("ViewableObjectAttribute", backref="viewable_object", cascade="all,delete")
     channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
-    layout_name = db.Column(db.String(30), nullable=False)
+    layout_name = db.Column(db.String(50), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
 
