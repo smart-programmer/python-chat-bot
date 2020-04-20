@@ -1,5 +1,8 @@
 from CHATBOT.models import *
 
+db.drop_all()
+db.create_all()
+
 c = ChannelModel(channelObj_id="7e4da85010004d32a1427e4a2edcee33")
 db.session.add(c)
 
