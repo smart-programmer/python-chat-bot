@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+{% for bot in current_user.bots %}
+    <a href="{{ url_for('bot', bot_id=bot.id) }}"><h1>{{ bot.name }}</h1></a>
+{% endfor %}
+
+{% endblock %}

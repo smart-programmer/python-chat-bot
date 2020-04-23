@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+<form class="form-horizontal" role="form" method="POST">
+    {{ form.hidden_tag() }}
+
+
+    {{ form.full_name(placeholder="الاسم الكامل") }}
+
+    {{ form.email(placeholder="البريد الالكتروني") }}
+
+    {{ form.username(placeholder="اسم المستخدم") }}
+
+    {{ form.password(placeholder="الرقم السري") }}
+
+    {{ form.number(placeholder="phone number") }}
+
+
+    {{ form.submit() }}
+   
+</form>
+
+{% endblock %}

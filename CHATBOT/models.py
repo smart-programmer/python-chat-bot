@@ -1,5 +1,9 @@
 from CHATBOT import db, login_manager
 from datetime import datetime
+from flask_login import UserMixin
+
+
+
 
 class WebhookMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -7,14 +11,60 @@ class WebhookMessage(db.Model):
     message_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 
+# user experience models
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(60), unique=True, nullable=False)
+    password = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(255), nullable=False, unique=True)
+    number = db.Column(db.String(20), nullable=False, unique=True)
+    full_name = db.Column(db.String(255), nullable=False, unique=True)
+    bot = db.relationship("BotModel", backref="user")
+    is_admin = db.Column(db.Boolean, default=False)
+    rank = db.Column(db.String(255), nullable=True)
+    create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return "username: {}, full name: {}".format(self.username, self.full_name)
+
+
+bot_layouts = db.Table('bot_layouts',
+                        db.Column("bot_id", db.Integer, db.ForeignKey("bot_model.id")),
+                        db.Column("layout_id", db.Integer, db.ForeignKey("layout_model.id"))
+)
+
+
+
+class BotModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), unique=True, nullable=False)
+    active = db.Column(db.Boolean, default=False)
+    layouts = db.relationship("LayoutModel", secondary=bot_layouts, backref=db.backref("bots", lazy="dynamic")) #many to many relationship with the layout model
+    menues = db.relationship("MenueModel", backref="bot", cascade="all,delete")
+    contacts = db.relationship("ContactModel", cascade="all,delete", backref="bot")
+    viewable_objects = db.relationship("ViewableObjectModel", backref="channel", cascade="all,delete")
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=True)
+    create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+
+
+# core bot models
 
 
 class ChannelModel(db.Model):# everything that's channel specific needs to have a relationship with ChannelModel
     id = db.Column(db.Integer, primary_key=True)
+    bot = db.relationship("BotModel", backref="channel", uselist=False)
     channelObj_id = db.Column(db.String(50), nullable=False)
-    contacts = db.relationship("ContactModel", cascade="all,delete", backref="channel")
-    menues = db.relationship("MenueModel", backref="channel", cascade="all,delete")
-    viewable_objects = db.relationship("ViewableObjectModel", backref="channel", cascade="all,delete")
+    number = db.Column(db.String(20), unique=True, nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -22,7 +72,7 @@ class ChannelModel(db.Model):# everything that's channel specific needs to have 
 class ContactModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     number = db.Column(db.String(20), nullable=False)
-    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
+    bot_id = db.Column(db.Integer, db.ForeignKey("bot_model.id"), nullable=False)
     name = db.Column(db.String(255))
     session = db.relationship("ConversationSessionModel", backref="contact", uselist=False, cascade="all,delete")
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -51,8 +101,9 @@ class ConversationSessionArgModel(db.Model):
 
 class MenueModel(db.Model): # a model that stores bot possible procedures (every customer creates there own menues)
     id = db.Column(db.Integer, primary_key=True)
-    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
-    layout_name = db.Column(db.String(30), nullable=False) # this isn't a database relationship because we don't want the LayoutModel to store all customer's menues
+    bot_id = db.Column(db.Integer, db.ForeignKey("bot_model.id"), nullable=False)
+    # layout_name = db.Column(db.String(30), nullable=False) # this isn't a database relationship because we don't want the LayoutModel to store all customer's menues
+    layout_id = db.Column(db.Integer, db.ForeignKey("layout_model.id"), nullable=False)
     command = db.Column(db.String(20), nullable=False)
     description = db.Column(db.String(150), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -63,6 +114,8 @@ class MenueModel(db.Model): # a model that stores bot possible procedures (every
 class LayoutModel(db.Model): # represents how a command should be treated (we create the layouts)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False, unique=True) # maybe make this the primary_key
+    menues = db.relationship("MenueModel", backref="layout")
+    viewable_object_id = db.relationship("ViewableObjectModel", backref="layout")
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
 
@@ -71,8 +124,8 @@ class LayoutModel(db.Model): # represents how a command should be treated (we cr
 class ViewableObjectModel(db.Model): # insted of creating a model for every layout like OfferModel or StaticModel or EventModel we create a ViewableObjectModel object with that layout model attributes attached to it and a tag to indicate which layout this object reoresent for example object.tag = "event" and object.attributes == (event mdoel attributes) 
     id = db.Column(db.Integer, primary_key=True) # if a layout model needs a complex attribute we can always create a new Model for it and create a one way relation where the attribute has the layout_model id but the layout_model doesn't know anything about the attrubute (just like requirements and prticipants)
     attributes = db.relationship("ViewableObjectAttribute", backref="viewable_object", cascade="all,delete")
-    channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=False)
-    layout_name = db.Column(db.String(50), nullable=False)
+    bot_id = db.Column(db.Integer, db.ForeignKey("bot_model.id"), nullable=False)
+    layout_id = db.Column(db.Integer, db.ForeignKey("layout_model.id"), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
 

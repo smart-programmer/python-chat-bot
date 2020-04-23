@@ -3,8 +3,12 @@ from CHATBOT.models import *
 db.drop_all()
 db.create_all()
 
+# create user
+
 c = ChannelModel(channelObj_id="7e4da85010004d32a1427e4a2edcee33")
 db.session.add(c)
+
+# create user
 
 l = LayoutModel(name="show_products_prices")
 db.session.add(l)

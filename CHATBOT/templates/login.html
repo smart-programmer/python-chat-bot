@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+<form role="form" method="POST">
+    {{ form.hidden_tag() }}
+
+    {{ form.username.label() }}
+    {{ form.username(placeholder="username") }}
+
+    {{ form.password.label() }}
+    {{ form.password(placeholder="password") }}
+
+    {{ form.submit() }}
+   
+</form>
+
+<a href="{{ url_for('register') }}"><h1>register</h1></a>
+
+{% endblock %}

@@ -21,6 +21,10 @@ def update_session_message(message, conversation_session):
     db.session.commit()
 
 def get_attribute(attributes_list, attribute_name):
+    attribute = None
     for attrib in attributes_list:
         if attrib.name == attribute_name:
-            return attrib.value
+            attribute = attrib.value
+            break
+            
+    return attribute

@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+{% for product in products %}
+    <a href="{{ url_for('bot', bot_id=bot.id) }}"><h1>{{ product.name }} : {{ product.price }}</h1></a>
+    <h3>{{ product.description }}</h3>
+{% endfor %}
+
+<a href="{{ url_for('bot', bot_id=bot.id) }}"><h1>add product</h1></a>
+
+{% endblock %}

@@ -1,0 +1,3 @@
+show_products
+events
+schedule_appointment

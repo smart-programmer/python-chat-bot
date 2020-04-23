@@ -1,6 +1,6 @@
 from CHATBOT import db
 from CHATBOT.layout_processes import show_text_process
-from CHATBOT.models import MenueModel, ViewableObjectModel, ViewableObjectAttribute
+from CHATBOT.models import MenueModel, ViewableObjectModel, ViewableObjectAttribute, LayoutModel
 from CHATBOT.utils import get_attribute
 # define layouts logic
 
@@ -33,14 +33,15 @@ def new_contact_layout(client, conversation_session): # new_contact_layout shoul
     return False
 
 def show_menue_layout(client, conversation_session): # a menue could be implemented by the ViewableObject model insted of a MenueModel
-    menues = MenueModel.query.filter_by(channel_id=conversation_session.contact.channel.id)
+    menues = MenueModel.query.filter_by(bot=conversation_session.contact.bot)
     menue_string = "menue\n\n"
     for menue in menues:
         menue_string += menue.command + ": " + menue.description + "\n"
     show_text_process(client, menue_string, conversation_session)
 
 def show_products_prices_layout(client, conversation_session): # steps: 1- create layout Model 2- create menue with the layout 3- create viewable objects if needed step 4- write logic
-    viewable_objects = ViewableObjectModel.query.filter_by(layout_name=conversation_session.layout_name, channel=conversation_session.contact.channel)
+    layout = LayoutModel.query.filter_by(name=conversation_session.layout_name).first()
+    viewable_objects = ViewableObjectModel.query.filter_by(layout=layout, bot=conversation_session.contact.bot)
     string = "our products\n\n"
     for vb in viewable_objects: # add a description attribute so we can add description to things like pre build pc's
         attributes = vb.attributes 

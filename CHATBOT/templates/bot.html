@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+    <h1>Menues</h1>
+    <ul>
+        {% for menue in bot.menues %}
+        <a href="{{ url_for('menue', bot_id=bot.id, menue_id=menue.id) }}"><li>{{ menue.command }} : {{ menue.description }} : {{ menue.layout.name }}</li></a>
+        {% endfor %}
+    </ul>
+    <h1>Menues</h1>
+    <ul>
+        {% for layout in bot.layouts %}
+        <a href="{{ url_for('viewable_objects_router', bot_id=bot.id, layout_name=layout.name) }}"><li>{{ layout.name }}</li></a>
+        {% endfor %}
+    </ul>
+
+    <h1>
+        <ul>
+            <li><a href="{{ url_for('menue_create', bot_id=bot.id) }}"></a> add command</li>
+            <!-- <li><a href="{{ url_for('buy_layouts') }}"></a>get layouts</li> -->
+        </ul>
+    </h1>
+
+
+{% endblock %}
