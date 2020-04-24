@@ -291,6 +291,7 @@ def products(bot_id, layout_name):
         db.session.add(price)
         db.session.add(description)
         db.session.commit()
+        return redirect(url_for('products', bot_id=bot_id, layout_name=layout_name))
 
     return render_template("products.html", products_value=products_value, bot=bot, layout=layout, form=form)
 
