@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+<h2>available layouts</h2>
+{% for layout in layouts %}
+
+    <a href="{{ url_for('layout', bot_id=bot_id, layout_id=layout.id) }}">{{ layout.name }}</a>
+
+{% endfor %}
+
+{% endblock %}

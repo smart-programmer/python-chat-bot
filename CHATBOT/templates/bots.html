@@ -3,6 +3,8 @@
 
 {% block content %}
 
+<a href="{{ url_for('create_bot') }}"><h1>create a bot</h1></a>
+
 {% for bot in current_user.bots %}
     <a href="{{ url_for('bot', bot_id=bot.id) }}"><h1>{{ bot.name }}</h1></a>
 {% endfor %}

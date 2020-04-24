@@ -3,11 +3,31 @@
 
 {% block content %}
 
-{% for product in products %}
+<form class="form-horizontal" role="form" method="POST">
+    {{ form.hidden_tag() }}
+
+
+    {{ form.name(placeholder="الاسم") }}
+
+    {{ form.price(placeholder="السعر") }}
+
+    {{ form.description(placeholder="التفاصيل") }}
+
+
+    {{ form.submit() }}
+   
+</form>
+
+
+
+
+
+{% for product in products_value %}
     <a href="{{ url_for('bot', bot_id=bot.id) }}"><h1>{{ product.name }} : {{ product.price }}</h1></a>
     <h3>{{ product.description }}</h3>
 {% endfor %}
 
-<a href="{{ url_for('bot', bot_id=bot.id) }}"><h1>add product</h1></a>
+
+
 
 {% endblock %}

@@ -4,6 +4,7 @@ from CHATBOT.objects import ConversationObj, MessageObj, MessageContentObj, Cont
 from CHATBOT.models import ConversationSessionModel, ContactModel, ChannelModel, MenueModel, LayoutModel, ConversationSessionArgModel, BotModel
 import json
 from CHATBOT.layout_logic import new_contact_layout, static_layout, command_not_exists_layout, show_menue_layout, show_products_prices_layout
+from CHATBOT.layout_processes import show_text_process
 from CHATBOT.utils import reset_conversation_session, update_session_message
 # webhook logic handelrs
 
@@ -52,7 +53,7 @@ def message_created_handler(client, webhook_json_string):
                 reset_conversation_session(conversation_session)
                 show_menue_layout(client, conversation_session) # COMPLETE # call show menue at the finish of every layout
             return
-        elif layout_name == "show_products_prices": # a product is a viewable object with two attributes a product_name and a product_price
+        elif layout_name == "show_products": # a product is a viewable object with two attributes a product_name and a product_price
             finished = show_products_prices_layout(client, conversation_session)
             if finished:
                 show_menue_layout(client, conversation_session)
@@ -60,11 +61,13 @@ def message_created_handler(client, webhook_json_string):
         elif layout_name == "reserve_appointment_layout":
             # this is like an event layout the customer provides data (in this case what times are free) then we show that data to the user and then the user registers for a given hour with his information then we send a message to a given number that a user has registred or a given date (this only has 1 problem which is that the customer has to prvide which information the user should provide for each appointment) 
             pass
-            
+    
         elif layout_name == None:
             show_menue_layout(client, conversation_session)
             reset_conversation_session(conversation_session)
             return
+        else:
+            show_text_process(client, "not layout", conversation_session)
     else:
         # handle new contact create a session and a contact and add him to the right channel
         contact = ContactModel(number=str(contactObj.number), bot=bot)

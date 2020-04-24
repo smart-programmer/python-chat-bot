@@ -25,7 +25,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     number = db.Column(db.String(20), nullable=False, unique=True)
     full_name = db.Column(db.String(255), nullable=False, unique=True)
-    bot = db.relationship("BotModel", backref="user")
+    bots = db.relationship("BotModel", backref="user") 
     is_admin = db.Column(db.Boolean, default=False)
     rank = db.Column(db.String(255), nullable=True)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -49,8 +49,8 @@ class BotModel(db.Model):
     layouts = db.relationship("LayoutModel", secondary=bot_layouts, backref=db.backref("bots", lazy="dynamic")) #many to many relationship with the layout model
     menues = db.relationship("MenueModel", backref="bot", cascade="all,delete")
     contacts = db.relationship("ContactModel", cascade="all,delete", backref="bot")
-    viewable_objects = db.relationship("ViewableObjectModel", backref="channel", cascade="all,delete")
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    viewable_objects = db.relationship("ViewableObjectModel", backref="bot", cascade="all,delete")
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     channel_id = db.Column(db.Integer, db.ForeignKey("channel_model.id"), nullable=True)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -112,7 +112,7 @@ class MenueModel(db.Model): # a model that stores bot possible procedures (every
 
 
 class LayoutModel(db.Model): # represents how a command should be treated (we create the layouts)
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True) # add a description
     name = db.Column(db.String(50), nullable=False, unique=True) # maybe make this the primary_key
     menues = db.relationship("MenueModel", backref="layout")
     viewable_object_id = db.relationship("ViewableObjectModel", backref="layout")

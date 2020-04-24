@@ -76,7 +76,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login(): 
     if current_user.is_authenticated:
         return redirect(url_for("home"))
@@ -98,7 +98,7 @@ def login():
 
     return render_template("login.html", form=form)
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register(): 
     form = RegisterForm()
 
@@ -108,12 +108,13 @@ def register():
         email=form.email.data, password=password)
         db.session.add(user)
         db.session.commit()
+        return redirect(url_for("index"))
 
     return render_template("register.html", form=form)
 
 @app.route("/log_out")
 @login_required
-def log_out():
+def logout():
     logout_user()
     return redirect(url_for("index"))
 
@@ -129,78 +130,126 @@ def bots(): # C
 @app.route("/bot/<int:bot_id>", methods=["GET", "POST"])
 @login_required
 def bot(bot_id): # C
+    bot = BotModel.query.get(bot_id)
+
+    if not bot or not bot.user == current_user:
+        return redirect(url_for('index'))
+
+    return render_template("bot.html", bot=bot)
+
+@app.route("/bot_create", methods=["GET", "POST"])
+@login_required
+def create_bot(): # C
+    form = BotForm()
+   
+    if form.validate_on_submit():
+        bot = BotModel(name=form.name.data, user=current_user)
+        db.session.add(bot)
+        db.session.commit()
+        return redirect(url_for("bots"))
+
+    return render_template("bot_create.html", form=form)
+
+@app.route("/update_bot/<int:bot_id>", methods=["GET", "POST"])
+def update_bot(bot_id):
     form = BotForm()
     bot = BotModel.query.get(bot_id)
 
     if not bot or not bot.user == current_user:
         return redirect(url_for('index'))
-    else:
-        form.name = bot.name
 
+    if request.method == "GET":
+        form.name.data = bot.name
+    
     if form.validate_on_submit():
-        bot.name = form.name
+        bot.name = form.name.data
         db.session.add(bot)
-
         db.session.commit()
 
-    return render_template("bot.html", bot=bot, form=form)
-
-@app.route("/bot_create", methods=["GET", "POST"])
-@login_required
-def create_bot(bot_id): 
-    form = BotForm()
-   
-    if form.validate_on_submit():
-        bot = BotModel(name=form.name)
-        db.session.append(bot)
-        db.session.commit()
-
-    return render_template("bot_create.html", form=form)
+    return render_template("update_bot.html", form=form)
 
 
 @app.route("/menue/<int:menue_id>", methods=["GET", "POST"])
 @login_required
-def menue(menue_id, bot_id):
+def menue(menue_id):
     form = MenueForm()
 
     menue = MenueModel.query.get(menue_id)
     if not menue or not menue.bot in current_user.bots:
         return redirect(url_for('index'))
     
-    form.layout.data = menue.layout.name
-    form.command.data = menue.command
-    form.description.data = menue.description
+    if request.method == "GET":
+        form.layout.data = menue.layout.name
+        form.command.data = menue.command
+        form.description.data = menue.description
     
     if form.validate_on_submit():
-        layout = LayoutModel.query.filter_by(name=form.layout)
+        layout = LayoutModel.query.filter_by(name=form.layout.data).first()
+        if not layout in menue.bot.layouts:
+            return redirect(url_for("menue", menue_id=menue_id))
         menue.description = form.description.data
         menue.layout = layout
         menue.command = form.command.data
         db.session.add(menue)
         db.session.commit()
         
-    return render_template("menue.html", form=form, menue=menue)
+    return render_template("menue.html", form=form)
     
 
 @app.route("/menue_create/<int:bot_id>", methods=["GET", "POST"])
 def menue_create(bot_id):
     form = MenueForm()
     bot = BotModel.query.get(bot_id)
-    if form.validate_on_submit():
-        menue = MenueModel(bot=bot, layout=LayoutModel.query.filter_by(name=form.layout.data), description=form.description.data, command=form.command.data)
+    if not bot or not bot.user == current_user:
+        return redirect(url_for('index'))
+
+    if form.validate_on_submit(): 
+        layout = LayoutModel.query.filter_by(name=form.layout.data).first()
+        if not layout in bot.layouts:
+            return redirect(url_for("menue_create", bot_id=bot_id))
+        menue = MenueModel(bot=bot, layout=layout, description=form.description.data, command=form.command.data)
         db.session.add(menue)
         db.session.commit()
+        return redirect(url_for('index'))
     return render_template("menue_create.html", form=form)
+
+@app.route("/layouts/<int:bot_id>")
+def layouts(bot_id):
+    layouts = LayoutModel.query.all()
+    return render_template("layouts_view.html", bot_id=bot_id, layouts=layouts)
+
+@app.route("/layout/<int:bot_id>/<int:layout_id>")
+def layout(bot_id, layout_id):
+    bot = BotModel.query.get(bot_id)
+    if not bot or not bot.user == current_user:
+        return redirect(url_for('index'))
+
+    layout = LayoutModel.query.get(layout_id)
+
+    return render_template("layout_view.html", layout=layout, bot=bot)
+
+
+@app.route("/buy_layout/<int:bot_id>/<int:layout_id>")
+def buy_layout(bot_id, layout_id):# implement payment gateway here
+    bot = BotModel.query.get(bot_id)
+    if not bot or not bot.user == current_user:
+        return redirect(url_for('index'))
+
+    layout = LayoutModel.query.get(layout_id)
+
+    if not layout in bot.layouts:
+        bot.layouts.append(layout)
+        db.session.commit()
+
+    return redirect(url_for("bot", bot_id=bot.id))
+
+   
 
 
 @app.route("/viewable_objects_router/<layout_name>/<int:bot_id>")
-def viewable_objects_router(layout_name):
-    layouts = LayoutModel.query.all()
-    for layout in layouts:
-        if layout.name == layout_name:
-            return 
+def viewable_objects_router(layout_name, bot_id):
     if layout_name == "show_products":
-        return redirect(url_for("products", bot_id=bot_id))
+        return redirect(url_for("products", bot_id=bot_id, layout_name=layout_name))
     elif layout_name == "events":
         return redirect(url_for("events", bot_id=bot_id))
     elif layout_name == "schedule_appointment":
@@ -208,26 +257,42 @@ def viewable_objects_router(layout_name):
 
     return redirect(url_for("index")) 
 
-@app.route("/products/<int:bot_id>/<layout_name>")
+@app.route("/products/<int:bot_id>/<layout_name>", methods=["GET", "POST"])
 def products(bot_id, layout_name):
 
-    bot = BotModel,query.get(bot_id)
+    form = ProductsForm()
+
+    bot = BotModel.query.get(bot_id)
     if not bot or not bot.user == current_user:
         return redirect(url_for("index"))
 
-    layout = LayoutModel.query.filter_by(name=layout_name)
-    if not layout or layout not in bot.layouts:
+    layout = LayoutModel.query.filter_by(name=layout_name).first()
+    if not layout or not layout in bot.layouts:
         return redirect(url_for("index"))
 
-    products = ViewableObjectModel.quey.filter_by(bot=bot, layout=layout).all()
+    products = ViewableObjectModel.query.filter_by(bot_id=bot.id, layout=layout).all()
     name_values = []
+    products_value = []
     for product in products:
         attributes = product.attributes
         name = get_attribute(attributes, "product_name")
-        if name:
-            name_values.append(name)
+        price = get_attribute(attributes, "product_price")
+        description = get_attribute(attributes, "product_description")
+        # name_values.append(name)
+        products_value.append({"name": name, "price": price, "description": description})
 
-    return render_template("products.html", products=name_values)
+    if form.validate_on_submit():
+        product = ViewableObjectModel(layout=layout, bot=bot)
+        name = ViewableObjectAttribute(name="product_name", value=form.name.data, viewable_object=product)
+        price = ViewableObjectAttribute(name="product_price", value=str(form.price.data), viewable_object=product)
+        description = ViewableObjectAttribute(name="product_description", value=form.description.data, viewable_object=product)
+        db.session.add(product)
+        db.session.add(name)
+        db.session.add(price)
+        db.session.add(description)
+        db.session.commit()
+
+    return render_template("products.html", products_value=products_value, bot=bot, layout=layout, form=form)
 
 
 @app.route("/product/<int:bot_id>")
@@ -248,7 +313,7 @@ def product(product_id, bot_id):
 
     if form.validate_on_submit():
         product = ViewableObjectModel(layout=layout, bot=bot)
-        name = ViewableObjectAttribute(name="product_name", value=form.name.data viewable_object=product)
+        name = ViewableObjectAttribute(name="product_name", value=form.name.data, viewable_object=product)
         price = ViewableObjectAttribute(name="product_price", value=str(form.price.data), viewable_object=product)
         description = ViewableObjectAttribute(name="product_description", value=form.description.data, viewable_object=product)
         db.session.add(product)
@@ -259,3 +324,4 @@ def product(product_id, bot_id):
     return render_template("product.html", form=form)
 
 # add delete to everything that's creatable like bots and add update also
+
