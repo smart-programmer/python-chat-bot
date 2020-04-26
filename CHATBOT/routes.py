@@ -82,9 +82,10 @@ def index():
     form = LanguageForm()
     cookie = request.cookies.get("language")
     if not cookie:
-        response = make_response(render_template("index.html", form=form))
+        lngObj = LngObj.translate('index', "ar")
+        response = make_response(render_template("index.html", form=form, language_list=lngObj))
         set_user_language(response, "ar")
-        return redirect(url_for('index'))
+        return response
     else:
         form.language.default = cookie
         form.process()
