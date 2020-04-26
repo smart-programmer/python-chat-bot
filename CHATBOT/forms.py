@@ -23,6 +23,7 @@ class LoginForm(FlaskForm):
 
 class BotForm(FlaskForm):
     name = wtforms.StringField("اسم البوت",  validators=[DataRequired(), length(max=255)])
+    number = wtforms.StringField("رقم الجوال المراد للبوت", validators=[DataRequired(), length(max=20)])
     submit = wtforms.SubmitField("اطلب بوت")
 
 layouts = (
@@ -45,6 +46,7 @@ class ProductsForm(FlaskForm): # process form
 
 class ChannelForm(FlaskForm): # admin form
     id = wtforms.StringField("معرف القناة",  validators=[DataRequired(), length(max=50)])
+    channelObj_id = wtforms.StringField("معرف القناة",  validators=[DataRequired(), length(max=50)])
     number = wtforms.StringField("رقم جوال القناة",  validators=[DataRequired(), length(max=20)])
     submit = wtforms.SubmitField("انشئ قناة")
 
@@ -52,5 +54,13 @@ class ChannelForm(FlaskForm): # admin form
 class LayoutForm(FlaskForm): # admin form
     name = wtforms.StringField("اسم التنسيق",  validators=[DataRequired()])
     submit = wtforms.SubmitField("انشئ امر جديد")
+
+languages = (
+    ("ar", "العربية"),
+    ("en", "الانجليزية")
+)
+
+class LanguageForm(FlaskForm):
+    language = SelectField("select language", choices=languages, validators=[DataRequired()])
 
 

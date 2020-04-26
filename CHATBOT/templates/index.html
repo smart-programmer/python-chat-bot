@@ -3,4 +3,16 @@
 
 {% block content %}
 <h1>اهلا بك في موقع bot creator</h1>
+<h1>{{ get_text('h1-1', language_list) }}</h1>
+
+
+<form role="form" method="POST" action="{{ url_for('set_language') }}">
+    {{ form.hidden_tag() }}
+
+    {{ form.language.label() }}
+    {{ form.language(placeholder="language", onchange="this.form.submit()") }}
+
+</form>
+
+
 {% endblock %}

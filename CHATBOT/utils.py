@@ -1,4 +1,8 @@
+import os
+import json
+from CHATBOT import app
 from CHATBOT import db
+import datetime
 
 def set_object_field(name, parsed_json):
 
@@ -28,3 +32,18 @@ def get_attribute(attributes_list, attribute_name):
             break
             
     return attribute
+
+
+def set_user_language(response, language):
+	expire_date = datetime.datetime.now()
+	expire_date = expire_date + datetime.timedelta(days=100000)
+	response.set_cookie("language", language, expires=expire_date)
+
+
+def read_language_file(page_name, language):
+    path = os.path.join(app.root_path, "static", "languages", language + ".json")
+
+    with open(path, "r", encoding='utf-8') as f:
+        language_dict = json.loads(f.read())
+        page_list = language_dict[page_name]
+        return page_list

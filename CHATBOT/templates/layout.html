@@ -11,7 +11,7 @@
         <a href="{{ url_for('logout') }}"><li>سجل خروج</li></a>
         <a href="{{ url_for('bots') }}"><li>البوتات المملوكة</li></a>
         {% if current_user.is_admin %}
-        <a href="{{ url_for('logout') }}"><li>admin page</li></a>
+        <a href="{{ url_for('admin') }}"><li>admin page</li></a>
         {% endif %}
         {% else %}
         <a href="{{ url_for('login') }}"><li>سجل دخول</li></a>

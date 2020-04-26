@@ -1,16 +1,20 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, request, redirect, render_template, url_for, make_response
 from flask_mail import Message as MailMessage
 from CHATBOT import app, db, bcrypt, mail, MAIL_USERNAME
-from CHATBOT.models import WebhookMessage, BotModel, MenueModel, LayoutModel, ViewableObjectModel, ViewableObjectAttribute, User
-from CHATBOT.forms import MenueForm, ProductsForm, BotForm, RegisterForm, LoginForm
+from CHATBOT.models import WebhookMessage, BotModel, MenueModel, LayoutModel, ViewableObjectModel, ViewableObjectAttribute, User, ChannelModel
+from CHATBOT.forms import MenueForm, ProductsForm, BotForm, RegisterForm, LoginForm, ChannelForm, LanguageForm
 from flask_login import current_user, login_user, login_required, logout_user
 from CHATBOT.webhook_handlers import message_created_handler, message_updated_handler
-from CHATBOT.utils import get_attribute
+from CHATBOT.objects import LngObj
+from CHATBOT.utils import get_attribute, set_user_language
 from messagebird import conversation_webhook
 from messagebird import Client
 import messagebird
 import json
 from messagebird.conversation_message import MESSAGE_TYPE_HSM, MESSAGE_TYPE_TEXT
+import arabic_reshaper
+from bidi.algorithm import get_display
 
 
 
@@ -18,6 +22,13 @@ from messagebird.conversation_message import MESSAGE_TYPE_HSM, MESSAGE_TYPE_TEXT
 # When the first message is sent or received from a user, a conversation is automatically created for them.
 
 message_bird_api_access_key = "4LyuUQ5rrh2CT1Zwrql1hYuBW"
+# consider implementing a system for multiple api accesss keys so in the future there maybe more than one
+
+@app.context_processor
+def utility_processor():
+    def get_text(tag, language_list):
+        return next(x.get("description") for x in language_list if x.get("tag") == tag)
+    return dict(get_text=get_text)
 
 
 @app.route('/webhooks', methods=['GET', 'POST']) # note this needs to handle PUT(update)
@@ -51,11 +62,6 @@ def webhook_endpoint():
      
     if request.method == "POST":
         webhook_json_string = json.dumps(request.json)
-        webhookOBJ = WebhookMessage()
-        webhookOBJ.messagebird_request_string = webhook_json_string
-        db.session.add(webhookOBJ)
-        db.session.commit()
-        webhook_parsed_string = json.loads(webhook_json_string)
         if request.json["type"] == "message.created":
             message_created_handler(client, webhook_json_string)
 
@@ -73,7 +79,28 @@ def webhook_endpoint():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    form = LanguageForm()
+    cookie = request.cookies.get("language")
+    if not cookie:
+        response = make_response(render_template("index.html", form=form))
+        set_user_language(response, "ar")
+        return redirect(url_for('index'))
+    else:
+        form.language.default = cookie
+        form.process()
+
+    lngObj = LngObj.translate('index', cookie)
+    response = make_response(render_template("index.html", form=form, language_list=lngObj))
+    
+    return response
+
+@app.route("/set_language", methods=["POST"])
+def set_language():
+    language = request.form.get("language")
+    response = make_response(redirect(url_for('index')))
+    if language:
+        set_user_language(response, language)
+    return response
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -143,7 +170,7 @@ def create_bot(): # C
     form = BotForm()
    
     if form.validate_on_submit():
-        bot = BotModel(name=form.name.data, user=current_user)
+        bot = BotModel(name=form.name.data, user=current_user, number=form.number.data)
         db.session.add(bot)
         db.session.commit()
         return redirect(url_for("bots"))
@@ -151,6 +178,7 @@ def create_bot(): # C
     return render_template("bot_create.html", form=form)
 
 @app.route("/update_bot/<int:bot_id>", methods=["GET", "POST"])
+@login_required
 def update_bot(bot_id):
     form = BotForm()
     bot = BotModel.query.get(bot_id)
@@ -197,6 +225,7 @@ def menue(menue_id):
     
 
 @app.route("/menue_create/<int:bot_id>", methods=["GET", "POST"])
+@login_required
 def menue_create(bot_id):
     form = MenueForm()
     bot = BotModel.query.get(bot_id)
@@ -214,11 +243,13 @@ def menue_create(bot_id):
     return render_template("menue_create.html", form=form)
 
 @app.route("/layouts/<int:bot_id>")
+@login_required
 def layouts(bot_id):
     layouts = LayoutModel.query.all()
     return render_template("layouts_view.html", bot_id=bot_id, layouts=layouts)
 
 @app.route("/layout/<int:bot_id>/<int:layout_id>")
+@login_required
 def layout(bot_id, layout_id):
     bot = BotModel.query.get(bot_id)
     if not bot or not bot.user == current_user:
@@ -230,6 +261,7 @@ def layout(bot_id, layout_id):
 
 
 @app.route("/buy_layout/<int:bot_id>/<int:layout_id>")
+@login_required
 def buy_layout(bot_id, layout_id):# implement payment gateway here
     bot = BotModel.query.get(bot_id)
     if not bot or not bot.user == current_user:
@@ -247,6 +279,7 @@ def buy_layout(bot_id, layout_id):# implement payment gateway here
 
 
 @app.route("/viewable_objects_router/<layout_name>/<int:bot_id>")
+@login_required
 def viewable_objects_router(layout_name, bot_id):
     if layout_name == "show_products":
         return redirect(url_for("products", bot_id=bot_id, layout_name=layout_name))
@@ -258,6 +291,7 @@ def viewable_objects_router(layout_name, bot_id):
     return redirect(url_for("index")) 
 
 @app.route("/products/<int:bot_id>/<layout_name>", methods=["GET", "POST"])
+@login_required
 def products(bot_id, layout_name):
 
     form = ProductsForm()
@@ -279,7 +313,8 @@ def products(bot_id, layout_name):
         price = get_attribute(attributes, "product_price")
         description = get_attribute(attributes, "product_description")
         # name_values.append(name)
-        products_value.append({"name": name, "price": price, "description": description})
+        products_value.append({"name": name, "price": price, "description": description, "id" : product.id})
+    products_value.reverse()
 
     if form.validate_on_submit():
         product = ViewableObjectModel(layout=layout, bot=bot)
@@ -296,10 +331,10 @@ def products(bot_id, layout_name):
     return render_template("products.html", products_value=products_value, bot=bot, layout=layout, form=form)
 
 
-@app.route("/product/<int:bot_id>")
+
 @app.route("/product/<int:product_id>/<int:bot_id>")
-def product(product_id, bot_id):
-    form = ProductsForm()
+@login_required
+def delete_product(product_id, bot_id):
     bot = BotModel.query.get(bot_id)
     if not bot or not bot.user == current_user:
         return redirect(url_for("index"))
@@ -307,22 +342,37 @@ def product(product_id, bot_id):
     if product:
         if not product.bot == bot:
             return redirect(url_for("index"))
-        else: 
-            form.description.data = product.description
-            form.name.data = product.name
-            form.price.data = product.price
-
-    if form.validate_on_submit():
-        product = ViewableObjectModel(layout=layout, bot=bot)
-        name = ViewableObjectAttribute(name="product_name", value=form.name.data, viewable_object=product)
-        price = ViewableObjectAttribute(name="product_price", value=str(form.price.data), viewable_object=product)
-        description = ViewableObjectAttribute(name="product_description", value=form.description.data, viewable_object=product)
-        db.session.add(product)
-        db.session.add(name)
-        db.session.add(price)
-        db.session.add(description)
+    
+    layout = product.layout
+    db.session.delete(product)
     db.session.commit()
+    return redirect(url_for('products', layout_name=layout.name, bot_id=bot.id))
+
     return render_template("product.html", form=form)
 
 # add delete to everything that's creatable like bots and add update also
+
+@app.route("/admin")
+@login_required
+def admin():
+    
+    
+    return render_template("admin.html")
+
+@app.route("/create_channel", methods=["GET", "POST"])
+@login_required
+def create_channel():
+    form = ChannelForm()
+
+    if not current_user.is_admin:
+        return redirect(url_for('index'))
+
+    if form.validate_on_submit():
+        channel = ChannelModel(channelObj_id=form.channelObj_id.data, phone_number=form.number.data)
+        db.session.add(channel)
+        db.session.commit()
+        return redirect(url_for("channels"))
+    
+    return render_template("create_channel.html", form=form)
+
 

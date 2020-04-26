@@ -6,7 +6,8 @@
 <a href="{{ url_for('create_bot') }}"><h1>create a bot</h1></a>
 
 {% for bot in current_user.bots %}
-    <a href="{{ url_for('bot', bot_id=bot.id) }}"><h1>{{ bot.name }}</h1></a>
+    <a href="{% if bot.active %}{{ url_for('bot', bot_id=bot.id) }}{% else %}{{ url_for('bots') }}{% endif %}">
+        <h1>{{ bot.name }} - {{ bot.number }} - {% if bot.active %}مفعل{% else %}غير مفعل{% endif %}</h1></a>
 {% endfor %}
 
 {% endblock %}

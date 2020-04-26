@@ -23,8 +23,9 @@
 
 
 {% for product in products_value %}
-    <a href="{{ url_for('bot', bot_id=bot.id) }}"><h1>{{ product.name }} : {{ product.price }}</h1></a>
+    <h1>{{ product.name }} : {{ product.price }}</h1>
     <h3>{{ product.description }}</h3>
+    <a href="{{ url_for('delete_product', product_id=product.id, bot_id=bot.id) }}"><button type="button">احذف هذا المنتج</button></a>
 {% endfor %}
 
 

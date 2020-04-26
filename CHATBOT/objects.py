@@ -1,4 +1,4 @@
-from CHATBOT.utils import set_object_field
+from CHATBOT.utils import set_object_field, read_language_file
 import json
 
 # messagebird objects 
@@ -139,4 +139,13 @@ class CustomerDetailObj():
 
 
 
+class LngObj():
+    def __init__(self):
+        self.tag = None
+        self.text = None
 
+
+    @staticmethod
+    def translate(page_name, language):
+        return read_language_file(page_name, language)
+        
