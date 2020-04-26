@@ -1,4 +1,5 @@
 alembic==1.0.6
+arabic-reshaper==2.0.15
 astroid==2.3.3
 bcrypt==3.1.6
 blinker==1.4
@@ -11,6 +12,8 @@ Click==7.0
 colorama==0.4.3
 decorator==4.3.2
 docutils==0.14
+entrypoints==0.3
+flake8==3.7.9
 Flask==1.0.2
 Flask-Bcrypt==0.7.1
 Flask-Login==0.4.1
@@ -19,6 +22,7 @@ Flask-Migrate==2.3.1
 Flask-Script==2.0.6
 Flask-SQLAlchemy==2.3.2
 Flask-WTF==0.14.2
+future==0.18.2
 gunicorn==19.9.0
 idna==2.9
 infinity==1.4
@@ -34,8 +38,11 @@ mccabe==0.6.1
 messagebird==1.5.0
 Pillow==5.4.1
 psycopg2==2.7.7
+pycodestyle==2.5.0
 pycparser==2.19
+pyflakes==2.1.1
 pylint==2.4.4
+python-bidi==0.4.2
 python-dateutil==2.7.5
 python-editor==1.0.3
 requests==2.23.0
