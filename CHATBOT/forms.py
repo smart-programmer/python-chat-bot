@@ -45,7 +45,6 @@ class ProductsForm(FlaskForm): # process form
     submit = wtforms.SubmitField("ارفع منتج")
 
 class ChannelForm(FlaskForm): # admin form
-    id = wtforms.StringField("معرف القناة",  validators=[DataRequired(), length(max=50)])
     channelObj_id = wtforms.StringField("معرف القناة",  validators=[DataRequired(), length(max=50)])
     number = wtforms.StringField("رقم جوال القناة",  validators=[DataRequired(), length(max=20)])
     submit = wtforms.SubmitField("انشئ قناة")
@@ -57,10 +56,15 @@ class LayoutForm(FlaskForm): # admin form
 
 languages = (
     ("ar", "العربية"),
-    ("en", "الانجليزية")
+    ("en", "English")
 )
 
 class LanguageForm(FlaskForm):
     language = SelectField("select language", choices=languages, validators=[DataRequired()])
 
 
+
+class Bot_channel_linkerForm(FlaskForm):
+    bots = SelectField("select bot", choices=languages, validators=[DataRequired()])
+    channels = SelectField("select channel", choices=languages, validators=[DataRequired()])
+    submit = wtforms.SubmitField("اربط")

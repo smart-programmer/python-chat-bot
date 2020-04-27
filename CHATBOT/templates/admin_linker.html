@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+<form class="form-horizontal" role="form" method="POST">
+    {{ form.hidden_tag() }}
+
+    {{ form.bots(placeholder="bots") }}
+
+    {{ form.channels(placeholder="channels") }}
+
+    {{ form.submit() }}
+</form>
+
+    
+
+
+{% endblock %}

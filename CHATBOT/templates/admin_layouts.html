@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+<form class="form-horizontal" role="form" method="POST">
+    {{ form.hidden_tag() }}
+
+
+    {{ form.name(placeholder="اسم النظام") }}
+
+
+    {{ form.submit() }}
+   
+</form>
+
+    <h1>Filter All Layouts</h1>
+    <ul>
+        {% for layout in layouts %}
+        <li>{{ layout.name }}</li>
+        {% endfor %}
+    
+
+
+{% endblock %}

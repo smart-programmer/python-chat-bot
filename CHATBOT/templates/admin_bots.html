@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+
+    <h1>Filter All Bots</h1>
+    <ul>
+        {% for bot in bots %}
+        <li>{{ bot.name }} : {{ bot.number }} : {% if bot.channel %}<a href="{{ url_for('admin_channel', channel_id=bot.channel.id) }}">{{ bot.channel.channelObj_id }}</a>{% endif %}</li>
+        <a href="{{ url_for('admin_delete_bot',  bot_id=bot.id) }}"><button type="button">احذف هذا البوت</button></a>
+        {% endfor %}
+    
+
+
+{% endblock %}

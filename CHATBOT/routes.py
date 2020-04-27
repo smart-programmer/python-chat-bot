@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
+
 from flask import Flask, request, redirect, render_template, url_for, make_response
 from flask_mail import Message as MailMessage
 from CHATBOT import app, db, bcrypt, mail, MAIL_USERNAME
 from CHATBOT.models import WebhookMessage, BotModel, MenueModel, LayoutModel, ViewableObjectModel, ViewableObjectAttribute, User, ChannelModel
-from CHATBOT.forms import MenueForm, ProductsForm, BotForm, RegisterForm, LoginForm, ChannelForm, LanguageForm
+from CHATBOT.forms import MenueForm, ProductsForm, BotForm, RegisterForm, LoginForm, ChannelForm, LanguageForm, LayoutForm, Bot_channel_linkerForm
 from flask_login import current_user, login_user, login_required, logout_user
 from CHATBOT.webhook_handlers import message_created_handler, message_updated_handler
 from CHATBOT.objects import LngObj
@@ -13,8 +13,7 @@ from messagebird import Client
 import messagebird
 import json
 from messagebird.conversation_message import MESSAGE_TYPE_HSM, MESSAGE_TYPE_TEXT
-import arabic_reshaper
-from bidi.algorithm import get_display
+
 
 
 
@@ -82,9 +81,10 @@ def index():
     form = LanguageForm()
     cookie = request.cookies.get("language")
     if not cookie:
-        lngObj = LngObj.translate('index', "ar")
+        default_language = "ar"
+        lngObj = LngObj.translate('index', default_language)
         response = make_response(render_template("index.html", form=form, language_list=lngObj))
-        set_user_language(response, "ar")
+        set_user_language(response, default_language)
         return response
     else:
         form.language.default = cookie
@@ -333,7 +333,7 @@ def products(bot_id, layout_name):
 
 
 
-@app.route("/product/<int:product_id>/<int:bot_id>")
+@app.route("/delete_product/<int:product_id>/<int:bot_id>")
 @login_required
 def delete_product(product_id, bot_id):
     bot = BotModel.query.get(bot_id)
@@ -349,31 +349,135 @@ def delete_product(product_id, bot_id):
     db.session.commit()
     return redirect(url_for('products', layout_name=layout.name, bot_id=bot.id))
 
-    return render_template("product.html", form=form)
 
 # add delete to everything that's creatable like bots and add update also
 
 @app.route("/admin")
 @login_required
 def admin():
-    
-    
-    return render_template("admin.html")
+    if not current_user.is_admin:
+        return redirect(url_for("index"))
 
-@app.route("/create_channel", methods=["GET", "POST"])
+    layouts = LayoutModel.query.all()
+    available_channels = ChannelModel.query.filter_by(bot=None)
+    waiting_bots = BotModel.query.filter_by(channel=None)
+    
+    return render_template("admin.html", layouts=layouts, available_channels=available_channels, waiting_bots=waiting_bots)
+
+
+# def admin_bots
+@app.route("/admin_bots")
+def admin_bots():
+    if not current_user.is_admin:
+        return redirect(url_for("index"))
+    bots = BotModel.query.all()
+    return render_template("admin_bots.html", bots=bots)
+
+@app.route("/admin_bot/<int:bot_id>")
+def admin_bot(bot_id):
+    if not current_user.is_admin:
+        return redirect(url_for("index"))
+    bot = BotModel.query.get(bot_id)
+    return render_template("admin_bot.html", bots=bots)
+
+# def admin_channels
+@app.route("/admin_channels", methods=['GET', 'POST'])
 @login_required
-def create_channel():
+def admin_channels():
     form = ChannelForm()
 
     if not current_user.is_admin:
-        return redirect(url_for('index'))
+        return redirect(url_for("index"))
 
     if form.validate_on_submit():
         channel = ChannelModel(channelObj_id=form.channelObj_id.data, phone_number=form.number.data)
         db.session.add(channel)
         db.session.commit()
-        return redirect(url_for("channels"))
+        return redirect(url_for("admin_channels"))
+
+    channels = ChannelModel.query.all()
+    return render_template('admin_channels.html', channels=channels, form=form)
+
+
+@app.route("/admin_channel/<int:channel_id>")
+@login_required
+def admin_channel(channel_id):
+    if not current_user.is_admin:
+        return redirect(url_for("index"))
+
+    channels = ChannelModel.query.get(channel_id)
+    return render_template('admin_channel.html', channels=channels)
+
+
+@app.route("/admin_layouts", methods=['GET', 'POST'])
+@login_required
+def admin_layouts():
+    form = LayoutForm()
+
+    if not current_user.is_admin:
+        return redirect(url_for("index"))
+
+    if form.validate_on_submit():
+        layout = LayoutModel(name=form.name.data)
+        db.session.add(layout)
+        db.session.commit()
+        return redirect(url_for("admin_layouts"))
+
+    layouts = LayoutModel.query.all()
+    return render_template('admin_layouts.html', layouts=layouts, form=form)
+
+
+@app.route("/admin_linker", methods=['GET', 'POST'])
+def admin_linker():
+    if not current_user.is_admin:
+        return redirect(url_for("index"))
+
+    available_channels = ChannelModel.query.filter_by(bot=None)
+    waiting_bots = BotModel.query.filter_by(channel=None)
+
+    form = Bot_channel_linkerForm()
+    bot_choices = []
+    for bot in waiting_bots:
+        bot_choices.append([str(bot.id), bot.name])
+    form.bots.choices = bot_choices
+    channel_choices = []
+    for channel in available_channels:
+        channel_choices.append([str(channel.id), "{}::{}".format(channel.phone_number, channel.channelObj_id)])
+
+    form.channels.choices = channel_choices
+
+    if form.validate_on_submit():
+        bot = BotModel.query.get(int(form.bots.data))
+        channel = ChannelModel.query.get(int(form.channels.data))
+        bot.channel = channel
+        bot.active = True
+        bot.number = channel.phone_number
+        db.session.commit()
+        return redirect(url_for("admin"))
+
+
+    return render_template("admin_linker.html", form=form)
+
+
+@app.route("/delete_bot/<int:bot_id>")
+@login_required
+def admin_delete_bot(bot_id):
+    bot = BotModel.query.get(bot_id)
+    if not current_user.is_admin:
+        return redirect(url_for("index"))
     
-    return render_template("create_channel.html", form=form)
+    db.session.delete(bot)
+    db.session.commit()
+    return redirect(url_for('admin_bots'))
 
 
+@app.route("/delete_channel/<int:channel_id>")
+@login_required
+def admin_delete_channel(channel_id):
+    channel = ChannelModel.query.get(channel_id)
+    if not current_user.is_admin:
+        return redirect(url_for("index"))
+    
+    db.session.delete(channel)
+    db.session.commit()
+    return redirect(url_for('admin_channels'))

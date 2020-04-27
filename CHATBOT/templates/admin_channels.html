@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+<form class="form-horizontal" role="form" method="POST">
+    {{ form.hidden_tag() }}
+
+
+    {{ form.number(placeholder="رقم الجوال") }}
+
+    {{ form.channelObj_id(placeholder="معرف القناة") }}
+
+
+    {{ form.submit() }}
+   
+</form>
+
+    <h1>Filter All Channels</h1>
+    <ul>
+        {% for channel in channels %}
+        <li>{{ channel.channelObj_id }} : {{ channel.phone_number }} {% if channel.bot %}<a href="{{url_for('admin_bot', bot_id=channel.bot.id)}}">: {{ channel.bot.name }}</a>{% endif %}</li>
+        <a href="{{ url_for('admin_delete_channel',  channel_id=channel.id) }}"><button type="button">احذف هذه القناة</button></a>
+        {% endfor %}
+    
+
+
+{% endblock %}
