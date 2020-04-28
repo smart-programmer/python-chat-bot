@@ -25,7 +25,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     number = db.Column(db.String(20), nullable=False, unique=True)
     full_name = db.Column(db.String(255), nullable=False, unique=True)
-    bots = db.relationship("BotModel", backref="user") 
+    bots = db.relationship("BotModel", backref="user", cascade="all,delete") 
     is_admin = db.Column(db.Boolean, default=False)
     rank = db.Column(db.String(255), nullable=True)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

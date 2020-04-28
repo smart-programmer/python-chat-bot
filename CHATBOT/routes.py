@@ -361,12 +361,35 @@ def admin():
     layouts = LayoutModel.query.all()
     available_channels = ChannelModel.query.filter_by(bot=None)
     waiting_bots = BotModel.query.filter_by(channel=None)
+    admins = User.query.filter_by(is_admin=True)
     
-    return render_template("admin.html", layouts=layouts, available_channels=available_channels, waiting_bots=waiting_bots)
+    return render_template("admin.html", layouts=layouts, available_channels=available_channels, waiting_bots=waiting_bots, admins=admins)
+
+@app.route('/admin_users')
+@login_required
+def admin_users():
+    users = User.query.all()
+    return render_template("admin_users.html", users=users)
+
+@app.route('/admin_promote_user/<int:user_id>')
+@login_required
+def admin_promote_user(user_id):
+    user = User.query.get(user_id)
+    user.is_admin = True
+    db.session.commit()
+    return redirect(url_for("admin_users"))
+
+@app.route('/admin_delete_user/<int:user_id>')
+@login_required
+def admin_delete_user(user_id):
+    user = User.query.get(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for("admin_users"))
 
 
-# def admin_bots
 @app.route("/admin_bots")
+@login_required
 def admin_bots():
     if not current_user.is_admin:
         return redirect(url_for("index"))
@@ -428,6 +451,7 @@ def admin_layouts():
 
 
 @app.route("/admin_linker", methods=['GET', 'POST'])
+@login_required
 def admin_linker():
     if not current_user.is_admin:
         return redirect(url_for("index"))
@@ -478,6 +502,8 @@ def admin_delete_channel(channel_id):
     if not current_user.is_admin:
         return redirect(url_for("index"))
     
+    if channel.bot:
+        channel.bot.active = False
     db.session.delete(channel)
     db.session.commit()
     return redirect(url_for('admin_channels'))

@@ -6,20 +6,26 @@
     <h1>WAITING BOTS</h1>
     <ul>
         {% for bot in waiting_bots %}
-        <a href=""><li>{{ bot.name }} : {{ bot.number }} : {{ bot.active }}</li></a>
+        <li>{{ bot.name }} : {{ bot.number }} : {{ bot.active }}</li>
         {% endfor %}
     </ul>
     <h1>AVAILABLE CHANNELS</h1>
     <ul>
         {% for channel in available_channels %}
-        <a href=""><li>{{ channel.channelObj_id }} : {{ channel.phone_number }}</li></a>
+        <li>{{ channel.channelObj_id }} : {{ channel.phone_number }}</li>
         {% endfor %}
     </ul>
 
     <h1>LAYOUTS</h1>
     <ul>
         {% for layout in layouts %}
-        <a href=""><li>{{ layout.name }}</li></a>
+        <li>{{ layout.name }}</li>
+        {% endfor %}
+    </ul>
+    <h1>ADMINS</h1>
+    <ul>
+        {% for admin in admins %}
+        <li>{{ admin.full_name }} : {{ admin.number }}</li>
         {% endfor %}
     </ul>
 
@@ -27,6 +33,7 @@
     <a href="{{ url_for('admin_channels') }}"><h1>channels</h1></a>
     <a href="{{ url_for('admin_layouts') }}"><h1>layouts</h1></a>
     <a href="{{ url_for('admin_linker') }}"><h1>LINK</h1></a>
+    <a href="{{ url_for('admin_users') }}"><h1>users</h1></a>
 
 
 {% endblock %}
