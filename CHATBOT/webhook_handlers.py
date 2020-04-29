@@ -4,7 +4,7 @@ from CHATBOT.objects import ConversationObj, MessageObj, MessageContentObj, Cont
 from CHATBOT.models import ConversationSessionModel, ContactModel, ChannelModel, MenueModel, LayoutModel, ConversationSessionArgModel, BotModel
 import json
 from CHATBOT.layout_logic import new_contact_layout, static_layout, command_not_exists_layout, show_menue_layout, show_products_prices_layout
-from CHATBOT.layout_processes import show_text_process
+from CHATBOT.layout_processes import show_text_process, send_image_process
 from CHATBOT.utils import reset_conversation_session, update_session_message
 # webhook logic handelrs
 
@@ -57,6 +57,7 @@ def message_created_handler(client, webhook_json_string):
             return
         elif layout_name == "show_products": # a product is a viewable object with two attributes a product_name and a product_price
             finished = show_products_prices_layout(client, conversation_session)
+            send_image_process(client, "https://www.avira.com/en/blog/wp-content/uploads/2018/04/gaming-pc-2018.jpg", "testing", conversation_session)
             if finished:
                 reset_conversation_session(conversation_session)
                 show_menue_layout(client, conversation_session)
