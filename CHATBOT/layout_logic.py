@@ -62,11 +62,8 @@ def show_products_prices_layout(client, conversation_session): # steps: 1- creat
             except:
                 show_text_process(client, "incorrect command", conversation_session)
                 return False
-            viewable_object = viewable_objects[index]
-            if viewable_object == None:
-                show_text_process(client, "no prodct with this number", conversation_session)
-                return False
-            else:
+            try:
+                viewable_object = viewable_objects[index]
                 description = get_attribute(viewable_object.attributes, "product_description")
                 if description == None:
                     show_text_process(client, "no description for this product", conversation_session)
@@ -74,6 +71,9 @@ def show_products_prices_layout(client, conversation_session): # steps: 1- creat
                 else:
                     show_text_process(client, description, conversation_session)
                     return True
+            except:
+                show_text_process(client, "no prodct with this index", conversation_session)
+                return False
 
 def static_layout(client, conversation_session):
     pass
