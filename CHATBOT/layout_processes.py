@@ -30,7 +30,7 @@ def send_image_process(client, image_url, caption, conversation_session):
         'type': MESSAGE_TYPE_IMAGE, 
         'content': {
             'image': {
-                'url': image_url
+                'url': image_url,
                 'caption': caption
             } 
         }
