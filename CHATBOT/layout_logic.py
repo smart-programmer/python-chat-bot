@@ -62,7 +62,7 @@ def show_products_prices_layout(client, conversation_session): # steps: 1- creat
             except:
                 show_text_process(client, "incorrect command", conversation_session)
                 return False
-            viewable_object = viewable_objects.all()[index]
+            viewable_object = viewable_objects[index]
             if viewable_object == None:
                 show_text_process(client, "no prodct with this number", conversation_session)
                 return False
