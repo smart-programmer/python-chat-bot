@@ -56,6 +56,7 @@ def message_created_handler(client, webhook_json_string):
         elif layout_name == "show_products": # a product is a viewable object with two attributes a product_name and a product_price
             finished = show_products_prices_layout(client, conversation_session)
             if finished:
+                reset_conversation_session(conversation_session)
                 show_menue_layout(client, conversation_session)
             return
         elif layout_name == "reserve_appointment_layout":

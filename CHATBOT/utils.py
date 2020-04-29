@@ -47,3 +47,8 @@ def read_language_file(page_name, language):
         language_dict = json.loads(f.read())
         page_list = language_dict[page_name]
         return page_list
+
+
+def increment_step_counter(conversation_session):
+    conversation_session.step_counter += 1
+    db.session.commit()

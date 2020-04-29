@@ -1,0 +1,2 @@
+promote_admin.py: to promote a user to admin
+clean_db.py: to drop then create a database

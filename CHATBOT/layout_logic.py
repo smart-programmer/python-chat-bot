@@ -1,7 +1,7 @@
 from CHATBOT import db
 from CHATBOT.layout_processes import show_text_process
 from CHATBOT.models import MenueModel, ViewableObjectModel, ViewableObjectAttribute, LayoutModel
-from CHATBOT.utils import get_attribute
+from CHATBOT.utils import get_attribute, increment_step_counter
 # define layouts logic
 
 
@@ -42,12 +42,38 @@ def show_menue_layout(client, conversation_session): # a menue could be implemen
 def show_products_prices_layout(client, conversation_session): # steps: 1- create layout Model 2- create menue with the layout 3- create viewable objects if needed step 4- write logic
     layout = LayoutModel.query.filter_by(name=conversation_session.layout_name).first()
     viewable_objects = ViewableObjectModel.query.filter_by(layout=layout, bot=conversation_session.contact.bot)
-    string = "our products\n\n"
-    for vb in viewable_objects: # add a description attribute so we can add description to things like pre build pc's
-        attributes = vb.attributes 
-        string += "{} : {}\n\n".format(get_attribute(attributes, "product_name"), get_attribute(attributes, "product_price"))
-    show_text_process(client, string, conversation_session)
-    return True
+    if conversation_session.step_counter == 0:
+        string = "our products\n\n"
+        for index, vb in enumerate(viewable_objects): # add a description attribute so we can add description to things like pre build pc's
+            attributes = vb.attributes 
+            string += "{} : {}\n press {} to see product details \n".format(get_attribute(attributes, "product_name"), get_attribute(attributes, "product_price"), index)
+        string += "/n type exit to return to menue"
+        show_text_process(client, string, conversation_session)
+        increment_step_counter(conversation_session)
+        return False
+    elif conversation_session.step_counter == 1:
+        message = conversation_session.message
+        index = None
+        if message == "exit":
+            return True
+        else:
+            try:
+                index = int(message)
+            except:
+                show_text_process(client, "incorrect command", conversation_session)
+                return False
+            viewable_object = viewable_objects.all()[index]
+            if viewable_object == None:
+                show_text_process(client, "no prodct with this number", conversation_session)
+                return False
+            else:
+                description = get_attribute(viewable_object.attributes, "product_description")
+                if description == None:
+                    show_text_process(client, "no description for this product", conversation_session)
+                    return False
+                else:
+                    show_text_process(client, description, conversation_session)
+                    return True
 
 def static_layout(client, conversation_session):
     pass
