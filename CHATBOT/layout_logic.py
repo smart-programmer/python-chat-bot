@@ -69,7 +69,7 @@ def show_products_prices_layout(client, conversation_session): # steps: 1- creat
                 return False
 
             description = get_attribute(viewable_object.attributes, "product_description")
-            if description == None:
+            if description == "":
                 show_text_process(client, "no description for this product", conversation_session)
                 return False
             else:
