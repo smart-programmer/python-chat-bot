@@ -47,7 +47,7 @@ def show_products_prices_layout(client, conversation_session): # steps: 1- creat
         for index, vb in enumerate(viewable_objects): # add a description attribute so we can add description to things like pre build pc's
             attributes = vb.attributes 
             string += "{} : {}\n press {} to see product details \n".format(get_attribute(attributes, "product_name"), get_attribute(attributes, "product_price"), index)
-        string += "/n type exit to return to menue"
+        string += "\n type exit to return to menue"
         show_text_process(client, string, conversation_session)
         increment_step_counter(conversation_session)
         return False

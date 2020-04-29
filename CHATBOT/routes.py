@@ -21,6 +21,8 @@ from messagebird.conversation_message import MESSAGE_TYPE_HSM, MESSAGE_TYPE_TEXT
 # When the first message is sent or received from a user, a conversation is automatically created for them.
 
 message_bird_api_access_key = "4LyuUQ5rrh2CT1Zwrql1hYuBW"
+client = messagebird.Client(message_bird_api_access_key, features=[messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX])
+webhook_route = "webhook"
 # consider implementing a system for multiple api accesss keys so in the future there maybe more than one
 
 @app.context_processor
@@ -416,6 +418,12 @@ def admin_channels():
         channel = ChannelModel(channelObj_id=form.channelObj_id.data, phone_number=form.number.data)
         db.session.add(channel)
         db.session.commit()
+        webhook_request_dict = {
+        "events": ["message.created", "message.updated"], # i guess message.updated is when a message turns from pending to read and like that
+        "channelId": channel.channelObj_id,
+        "url": request.url_root + webhook_route
+        }
+        client.conversation_create_webhook(webhook_request_dict)
         return redirect(url_for("admin_channels"))
 
     channels = ChannelModel.query.all()
@@ -507,3 +515,8 @@ def admin_delete_channel(channel_id):
     db.session.delete(channel)
     db.session.commit()
     return redirect(url_for('admin_channels'))
+
+
+@app.route("/foo")
+def test():
+    return request.url_root

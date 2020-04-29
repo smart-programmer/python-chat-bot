@@ -25,6 +25,8 @@ def message_created_handler(client, webhook_json_string):
     channelObj_id = messageObj.channelId
     channel = ChannelModel.query.filter_by(channelObj_id=channelObj_id).first()
     bot = channel.bot
+    if bot == None:
+        return 
 
     # handle message result
     # if we know contact then do this if he got a session then complete and so on
