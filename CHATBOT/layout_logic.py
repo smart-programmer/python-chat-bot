@@ -50,7 +50,7 @@ def show_products_prices_layout(client, conversation_session): # steps: 1- creat
         string += "\ntype exit to return to menue"
         show_text_process(client, string, conversation_session)
         increment_step_counter(conversation_session)
-        return False
+        return True
     elif conversation_session.step_counter == 1:
         message = conversation_session.message
         index = None
