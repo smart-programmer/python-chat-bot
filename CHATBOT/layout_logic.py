@@ -42,7 +42,7 @@ def show_menue_layout(client, conversation_session): # a menue could be implemen
 def show_products_prices_layout(client, conversation_session): # steps: 1- create layout Model 2- create menue with the layout 3- create viewable objects if needed step 4- write logic
     layout = LayoutModel.query.filter_by(name=conversation_session.layout_name).first()
     viewable_objects = ViewableObjectModel.query.filter_by(layout=layout, bot=conversation_session.contact.bot).all()
-    if conversation_session.step_counter == 0:
+    if True:
         string = "our products\n\n"
         for index, vb in enumerate(viewable_objects): # add a description attribute so we can add description to things like pre build pc's
             attributes = vb.attributes 
