@@ -59,7 +59,7 @@ def message_created_handler(client, webhook_json_string):
             finished = show_products_prices_layout(client, conversation_session)
             if finished:
                 reset_conversation_session(conversation_session)
-                show_text_process(client, "hey {}".format(conversation_session.layout_name, conversation_session))
+                show_text_process(client, "hey {}".format(conversation_session.layout_name), conversation_session)
                 show_menue_layout(client, conversation_session)
             return
         elif layout_name == "reserve_appointment_layout":
