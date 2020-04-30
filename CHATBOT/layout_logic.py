@@ -111,7 +111,7 @@ def show_scheduled_times_layout(client, conversation_session): #
         friday:    {}\n
         saturday:  {}\n
         """.format(sunday, monday, tuesday, wednesday, thursday, friday, saturday)
-        show_text_process(client, description, conversation_session)
+        show_text_process(client, schedule_string, conversation_session)
     else:
         show_text_process(client, "no chedule available", conversation_session)
     return True
