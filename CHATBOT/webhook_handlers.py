@@ -62,7 +62,7 @@ def message_created_handler(client, webhook_json_string):
                 show_menue_layout(client, conversation_session)
             return
         elif layout_name == "show_scheduled_times":
-            finished = show_scheduled_times_layout()
+            finished = show_scheduled_times_layout(client, conversation_session)
             if finished:
                 reset_conversation_session(conversation_session)
                 show_menue_layout(client, conversation_session)
