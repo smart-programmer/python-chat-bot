@@ -1,0 +1,7 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+<h1>this system is for times</h1>
+<a href="{{ url_for('buy_layout', layout_id=layout.id, bot_id=bot.id) }}"><button type="button">اشتري هذا التنسيق</button></a>
+{% endblock %}

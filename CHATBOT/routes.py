@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, render_template, url_for, make_respo
 from flask_mail import Message as MailMessage
 from CHATBOT import app, db, bcrypt, mail, MAIL_USERNAME
 from CHATBOT.models import WebhookMessage, BotModel, MenueModel, LayoutModel, ViewableObjectModel, ViewableObjectAttribute, User, ChannelModel
-from CHATBOT.forms import MenueForm, ProductsForm, BotForm, RegisterForm, LoginForm, ChannelForm, LanguageForm, LayoutForm, Bot_channel_linkerForm
+from CHATBOT.forms import MenueForm, ProductsForm, BotForm, RegisterForm, LoginForm, ChannelForm, LanguageForm, LayoutForm, Bot_channel_linkerForm, ScheduledTimesForm
 from flask_login import current_user, login_user, login_required, logout_user
 from CHATBOT.webhook_handlers import message_created_handler, message_updated_handler
 from CHATBOT.objects import LngObj
@@ -229,11 +229,19 @@ def menue(menue_id):
 
 @app.route("/menue_create/<int:bot_id>", methods=["GET", "POST"])
 @login_required
-def menue_create(bot_id):
+def menue_create(bot_id): 
     form = MenueForm()
+
     bot = BotModel.query.get(bot_id)
     if not bot or not bot.user == current_user:
         return redirect(url_for('index'))
+
+    layouts = bot.layouts
+    layout_choices = []
+    for layout in layouts:
+        layout_choices.append([layout.name, layout.name])
+    form.layout.choices = layout_choices
+
 
     if form.validate_on_submit(): 
         layout = LayoutModel.query.filter_by(name=form.layout.data).first()
@@ -260,7 +268,7 @@ def layout(bot_id, layout_id):
 
     layout = LayoutModel.query.get(layout_id)
 
-    return render_template("layout_view.html", layout=layout, bot=bot)
+    return render_template(layout.name + ".html", layout=layout, bot=bot)
 
 
 @app.route("/buy_layout/<int:bot_id>/<int:layout_id>")
@@ -290,6 +298,8 @@ def viewable_objects_router(layout_name, bot_id):
         return redirect(url_for("events", bot_id=bot_id))
     elif layout_name == "schedule_appointment":
         return redirect(url_for("appointments", bot_id=bot_id))
+    elif layout_name == "show_scheduled_times":
+        return redirect(url_for("show_scheduled_times", bot_id=bot_id, layout_name=layout_name))
 
     return redirect(url_for("index")) 
 
@@ -308,15 +318,14 @@ def products(bot_id, layout_name):
         return redirect(url_for("index"))
 
     products = ViewableObjectModel.query.filter_by(bot_id=bot.id, layout=layout).all()
-    name_values = []
     products_value = []
     for product in products:
         attributes = product.attributes
         name = get_attribute(attributes, "product_name")
         price = get_attribute(attributes, "product_price")
         description = get_attribute(attributes, "product_description")
-        # name_values.append(name)
-        products_value.append({"name": name, "price": price, "description": description, "id" : product.id})
+        image = get_attribute(attributes, "product_image")
+        products_value.append({"name": name, "price": price, "description": description, "image": image, "id" : product.id})
     products_value.reverse()
 
     if form.validate_on_submit():
@@ -324,10 +333,12 @@ def products(bot_id, layout_name):
         name = ViewableObjectAttribute(name="product_name", value=form.name.data, viewable_object=product)
         price = ViewableObjectAttribute(name="product_price", value=str(form.price.data), viewable_object=product)
         description = ViewableObjectAttribute(name="product_description", value=form.description.data, viewable_object=product)
+        image = ViewableObjectAttribute(name="product_image", value=form.image_url.data, viewable_object=product)
         db.session.add(product)
         db.session.add(name)
         db.session.add(price)
         db.session.add(description)
+        db.session.add(image)
         db.session.commit()
         return redirect(url_for('products', bot_id=bot_id, layout_name=layout_name))
 
@@ -351,6 +362,88 @@ def delete_product(product_id, bot_id):
     db.session.commit()
     return redirect(url_for('products', layout_name=layout.name, bot_id=bot.id))
 
+
+
+@app.route("/scheduled_times/<int:bot_id>/<layout_name>", methods=["GET", "POST"])
+def show_scheduled_times(bot_id, layout_name):
+
+    form = ScheduledTimesForm()
+
+    bot = BotModel.query.get(bot_id)
+    if not bot or not bot.user == current_user:
+        return redirect(url_for("index"))
+
+    layout = LayoutModel.query.filter_by(name=layout_name).first()
+    if not layout or not layout in bot.layouts:
+        return redirect(url_for("index"))
+
+    schedule_string = ""
+    week = ViewableObjectModel.query.filter_by(bot_id=bot.id, layout=layout).first()
+    
+    if request.method == "GET":
+        if week:
+            attributes = week.attributes
+            sunday = get_attribute(attributes, "sunday")
+            monday = get_attribute(attributes, "monday")
+            tuesday = get_attribute(attributes, "tuesday")
+            wednesday = get_attribute(attributes, "wednesday")
+            thursday = get_attribute(attributes, "thursday")
+            friday = get_attribute(attributes, "friday")
+            saturday = get_attribute(attributes, "saturday")
+            schedule_string = """
+            sunday:    {}\n
+            monday:    {}\n
+            tuesday:   {}\n
+            wednesday: {}\n
+            thursday:  {}\n
+            friday:    {}\n
+            saturday:  {}\n
+            """.format(sunday, monday, tuesday, wednesday, thursday, friday, saturday)
+            form.sun.data = sunday
+            form.mon.data = monday
+            form.tue.data = tuesday
+            form.wed.data = wednesday
+            form.thur.data = thursday
+            form.fri.data = friday
+            form.sat.data = saturday
+        else:
+            schedule_string = "heyyy"
+
+
+    if form.validate_on_submit():
+        if not week:
+            week = ViewableObjectModel(layout=layout, bot=bot)
+            days = [ViewableObjectAttribute(name="sunday", value=form.sun.data, viewable_object=week),
+            ViewableObjectAttribute(name="monday", value=form.mon.data, viewable_object=week),
+            ViewableObjectAttribute(name="tuesday", value=form.tue.data, viewable_object=week),
+            ViewableObjectAttribute(name="wednesday", value=form.wed.data, viewable_object=week),
+            ViewableObjectAttribute(name="thursday", value=form.thur.data, viewable_object=week),
+            ViewableObjectAttribute(name="friday", value=form.fri.data, viewable_object=week),
+            ViewableObjectAttribute(name="saturday", value=form.sat.data, viewable_object=week)]
+            db.session.add(week)
+            for day in days:
+                db.session.add(day)
+            db.session.commit()
+            return redirect(url_for("show_scheduled_times", bot_id=bot_id, layout_name=layout_name))
+        sunday = ViewableObjectAttribute.query.filter_by(name="sunday", viewable_object=week)
+        monday = ViewableObjectAttribute.query.filter_by(name="monday", viewable_object=week)
+        tuesday = ViewableObjectAttribute.query.filter_by(name="tuesday", viewable_object=week)
+        wednesday = ViewableObjectAttribute.query.filter_by(name="wednesday", viewable_object=week)
+        thursday = ViewableObjectAttribute.query.filter_by(name="thursday", viewable_object=week)
+        friday = ViewableObjectAttribute.query.filter_by(name="friday", viewable_object=week)
+        saturday = ViewableObjectAttribute.query.filter_by(name="saturday", viewable_object=week)
+        sunday.value = form.sun.data
+        monday.value = form.mon.data
+        tuesday.value = form.tue.data
+        wednesday.value = form.wed.data
+        thursday.value = form.thur.data
+        friday.value = form.fri.data
+        saturday.value = form.sat.data
+        db.session.commit()
+        return redirect(url_for("show_scheduled_times", bot_id=bot_id, layout_name=layout_name))
+
+
+    return render_template("scheduled_times.html", schedule_string=schedule_string, form=form)
 
 # add delete to everything that's creatable like bots and add update also
 
@@ -418,12 +511,12 @@ def admin_channels():
         channel = ChannelModel(channelObj_id=form.channelObj_id.data, phone_number=form.number.data)
         db.session.add(channel)
         db.session.commit()
-        webhook_request_dict = {
-        "events": ["message.created", "message.updated"], # i guess message.updated is when a message turns from pending to read and like that
-        "channelId": channel.channelObj_id,
-        "url": request.url_root + webhook_route
-        }
-        client.conversation_create_webhook(webhook_request_dict)
+        # webhook_request_dict = {
+        # "events": ["message.created", "message.updated"], # i guess message.updated is when a message turns from pending to read and like that
+        # "channelId": channel.channelObj_id,
+        # "url": request.url_root + webhook_route
+        # }
+        # client.conversation_create_webhook(webhook_request_dict)
         return redirect(url_for("admin_channels"))
 
     channels = ChannelModel.query.all()

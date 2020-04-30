@@ -69,18 +69,52 @@ def show_products_prices_layout(client, conversation_session): # steps: 1- creat
                 return False
 
             description = get_attribute(viewable_object.attributes, "product_description")
-            if description == "":
+            image = get_attribute(viewable_object.attributes, "product_image")
+
+            if image != "":
+                send_image_process(client, image, description, conversation_session)
+            elif description == "":
                 show_text_process(client, "no description for this product", conversation_session)
-                return False
             else:
                 show_text_process(client, description, conversation_session)
-                return False
+        
 
 def static_layout(client, conversation_session):
     pass
 
 def command_not_exists_layout(client, conversation_session):
     show_text_process(client, "no such command exists", conversation_session)
+
+
+def schedule_appointments_layout(client, conversation_session):
+    pass
+
+def show_scheduled_times_layout(client, conversation_session): # 
+    # this layout can be used to show work times and such
+    layout = LayoutModel.query.filter_by(name=conversation_session.layout_name).first()
+    week = ViewableObjectModel.query.filter_by(layout=layout, bot=conversation_session.contact.bot).first()
+    if week:
+        attributes = week.attributes
+        sunday = get_attribute(attributes, "sunday")
+        monday = get_attribute(attributes, "monday")
+        tuesday = get_attribute(attributes, "tuesday")
+        wednesday = get_attribute(attributes, "wednesday")
+        thursday = get_attribute(attributes, "thursday")
+        friday = get_attribute(attributes, "friday")
+        saturday = get_attribute(attributes, "saturday")
+        schedule_string = """
+        sunday:    {}\n
+        monday:    {}\n
+        tuesday:   {}\n
+        wednesday: {}\n
+        thursday:  {}\n
+        friday:    {}\n
+        saturday:  {}\n
+        """.format(sunday, monday, tuesday, wednesday, thursday, friday, saturday)
+        show_text_process(client, description, conversation_session)
+    else:
+        show_text_process(client, "no chedule available", conversation_session)
+    return True
 
 
 def event_layout(conversation_session):

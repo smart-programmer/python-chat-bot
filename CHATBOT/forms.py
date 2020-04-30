@@ -38,10 +38,21 @@ class MenueForm(FlaskForm):
     layout = SelectField("النظام المتبع", choices=layouts, validators=[DataRequired()])
     submit = wtforms.SubmitField("انشئ امر جديد")
 
-class ProductsForm(FlaskForm): # process form
+class ProductsForm(FlaskForm): # layout form
     name = wtforms.StringField("الاسم",  validators=[DataRequired(), length(max=255)])
     price = wtforms.FloatField("السعر",  validators=[DataRequired()])
     description =  wtforms.StringField("الوصف", validators=[length(max=500)])
+    image_url = wtforms.StringField('رابط الصورة', validators=[length(max=500)])
+    submit = wtforms.SubmitField("ارفع منتج")
+
+class ScheduledTimesForm(FlaskForm): # layout form
+    sun = wtforms.StringField("يوم الاحد",  validators=[DataRequired(), length(max=90)])
+    mon = wtforms.StringField("يوم الاثنين",  validators=[DataRequired(), length(max=90)])
+    tue =  wtforms.StringField("يوم الثلاثاء", validators=[DataRequired(), length(max=90)])
+    wed = wtforms.StringField('يوم الاربعاء', validators=[DataRequired(), length(max=90)])
+    thur = wtforms.StringField('يوم الخميس', validators=[DataRequired(), length(max=90)])
+    fri = wtforms.StringField('يوم الجمعة', validators=[DataRequired(), length(max=90)])
+    sat = wtforms.StringField('يوم السبت', validators=[DataRequired(), length(max=90)])
     submit = wtforms.SubmitField("ارفع منتج")
 
 class ChannelForm(FlaskForm): # admin form

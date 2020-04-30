@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+<form role="form" method="POST">
+    {{ form.hidden_tag() }}
+
+
+    {{ form.sun(placeholder="الاحد") }}
+
+    {{ form.mon(placeholder="الاثنين") }}
+
+    {{ form.tue(placeholder="الثلاثاء") }} 
+
+    {{ form.wed(placeholder="الاربعاء") }}
+
+    {{ form.thur(placeholder="الخميس") }}
+
+    {{ form.fri(placeholder="الجمعة") }}
+    
+    {{ form.sat(placeholder="السبت") }}
+
+    {{ form.submit() }}
+   
+</form>
+
+
+
+
+<h2>{{ schedule_string }}</h2>
+
+
+
+
+
+{% endblock %}

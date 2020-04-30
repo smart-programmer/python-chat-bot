@@ -57,11 +57,17 @@ def message_created_handler(client, webhook_json_string):
             return
         elif layout_name == "show_products": # a product is a viewable object with two attributes a product_name and a product_price
             finished = show_products_prices_layout(client, conversation_session)
-            send_image_process(client, "https://www.avira.com/en/blog/wp-content/uploads/2018/04/gaming-pc-2018.jpg", "testing", conversation_session)
             if finished:
                 reset_conversation_session(conversation_session)
                 show_menue_layout(client, conversation_session)
             return
+        elif layout_name == "show_scheduled_times":
+            finished = show_scheduled_times_layout()
+            if finished:
+                reset_conversation_session(conversation_session)
+                show_menue_layout(client, conversation_session)
+            return
+
         elif layout_name == "reserve_appointment_layout":
             # this is like an event layout the customer provides data (in this case what times are free) then we show that data to the user and then the user registers for a given hour with his information then we send a message to a given number that a user has registred or a given date (this only has 1 problem which is that the customer has to prvide which information the user should provide for each appointment) 
             pass
