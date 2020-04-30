@@ -104,12 +104,12 @@ def show_scheduled_times_layout(client, conversation_session): #
         saturday = get_attribute(attributes, "saturday")
         schedule_string = """
         sunday:    {}\n
-        monday:    {}\n
-        tuesday:   {}\n
-        wednesday: {}\n
-        thursday:  {}\n
-        friday:    {}\n
-        saturday:  {}\n
+    monday:    {}\n
+    tuesday:   {}\n
+    wednesday: {}\n
+    thursday:  {}\n
+    friday:    {}\n
+    saturday:  {}\n
         """.format(sunday, monday, tuesday, wednesday, thursday, friday, saturday)
         show_text_process(client, schedule_string, conversation_session)
     else:
