@@ -442,7 +442,7 @@ def show_scheduled_times(bot_id, layout_name, menue_id):
             for day in days:
                 db.session.add(day)
             db.session.commit()
-            return redirect(url_for("show_scheduled_times", bot_id=bot_id, layout_name=layout_name))
+            return redirect(url_for("show_scheduled_times", bot_id=bot_id, layout_name=layout_name, menue_id=menue_id))
         sunday = ViewableObjectAttribute.query.filter_by(name="sunday", viewable_object=week)
         monday = ViewableObjectAttribute.query.filter_by(name="monday", viewable_object=week)
         tuesday = ViewableObjectAttribute.query.filter_by(name="tuesday", viewable_object=week)
@@ -458,7 +458,7 @@ def show_scheduled_times(bot_id, layout_name, menue_id):
         friday.value = form.fri.data
         saturday.value = form.sat.data
         db.session.commit()
-        return redirect(url_for("show_scheduled_times", bot_id=bot_id, layout_name=layout_name))
+        return redirect(url_for("show_scheduled_times", bot_id=bot_id, layout_name=layout_name, menue_id=menue_id))
 
 
     return render_template("scheduled_times.html", schedule_string=schedule_string, form=form)

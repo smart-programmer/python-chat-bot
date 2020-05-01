@@ -93,8 +93,10 @@ def schedule_appointments_layout(client, conversation_session):
 
 def show_scheduled_times_layout(client, conversation_session): # 
     # this layout can be used to show work times and such
+    bot = conversation_session.contact.bot
     layout = LayoutModel.query.filter_by(name=conversation_session.layout_name).first()
-    week = ViewableObjectModel.query.filter_by(layout=layout, bot=conversation_session.contact.bot).first()
+    menue = MenueModel.query.get(conversation_session.menue_id)
+    week = ViewableObjectModel.query.filter_by(layout=layout, bot=bot, menue=menue).first()
     if week:
         attributes = week.attributes
         sunday = get_attribute(attributes, "sunday")
