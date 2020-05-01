@@ -1,5 +1,5 @@
 from CHATBOT import db
-from CHATBOT.layout_processes import show_text_process
+from CHATBOT.layout_processes import show_text_process, send_image_process
 from CHATBOT.models import MenueModel, ViewableObjectModel, ViewableObjectAttribute, LayoutModel
 from CHATBOT.utils import get_attribute, increment_step_counter
 # define layouts logic
