@@ -17,11 +17,9 @@
 </form>
 
 
-<h1>Layouts</h1>
+<h1>Layout</h1>
 <ul>
-    {% for layout in menue.bot.layouts %}
-    <a href="{{ url_for('viewable_objects_router', bot_id=menue.bot.id, layout_name=layout.name, menue_id=menue.id) }}"><li>{{ layout.name }}</li></a>
-    {% endfor %}
+<a href="{{ url_for('viewable_objects_router', bot_id=menue.bot.id, layout_name=menue.layout.name, menue_id=menue.id) }}"><li>{{ menue.layout.name }}</li></a>
 </ul>
 
 {% endblock %}
