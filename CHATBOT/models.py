@@ -86,7 +86,7 @@ class ConversationSessionModel(db.Model):
     conversationObj_id = db.Column(db.String(40), nullable=False)
     contact_id = db.Column(db.Integer, db.ForeignKey("contact_model.id"))
     message = db.Column(db.Text, nullable=False)
-    menue_id = db.Coloumn(db.Integer)
+    menue_id = db.Column(db.Integer)
     arguments = db.relationship("ConversationSessionArgModel", backref="session", cascade="all,delete") # to carry out information for layouts
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
