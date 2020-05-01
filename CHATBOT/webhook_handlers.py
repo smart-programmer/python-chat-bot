@@ -47,6 +47,8 @@ def message_created_handler(client, webhook_json_string):
                 return
             layout_name = menue.layout.name # simple: look for the layout of the menue that the user picked for example if he picked from the menue command number 4 we search for which layout command number 4 should follow
             conversation_session.layout_name = layout_name
+            conversation_session.menue_id = menue.id
+            db.session.commit()
 
         # handle conversation depending on the message layout
         if layout_name == "new_contact":

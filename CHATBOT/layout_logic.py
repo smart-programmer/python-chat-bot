@@ -42,7 +42,7 @@ def show_menue_layout(client, conversation_session): # a menue could be implemen
 def show_products_prices_layout(client, conversation_session): # steps: 1- create layout Model 2- create menue with the layout 3- create viewable objects if needed step 4- write logic
     bot = conversation_session.contact.bot
     layout = LayoutModel.query.filter_by(name=conversation_session.layout_name).first()
-    menue = MenueModel.query.filter(MenueModel.command==conversation_session.message, MenueModel.bot_id==bot.id).first()
+    menue = MenueModel.query.get(conversation_session.menue_id)
     viewable_objects = ViewableObjectModel.query.filter_by(layout=layout, bot=bot, menue=menue).all()
     if conversation_session.step_counter == 0:
         string = "our products\n\n"
