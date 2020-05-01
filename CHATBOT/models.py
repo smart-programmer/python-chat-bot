@@ -107,6 +107,7 @@ class MenueModel(db.Model): # a model that stores bot possible procedures (every
     layout_id = db.Column(db.Integer, db.ForeignKey("layout_model.id"), nullable=False)
     command = db.Column(db.String(20), nullable=False)
     description = db.Column(db.String(150), nullable=False)
+    viewable_objects = db.relationship("ViewableObjectModel", backref="menue")
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
        
@@ -116,7 +117,7 @@ class LayoutModel(db.Model): # represents how a command should be treated (we cr
     id = db.Column(db.Integer, primary_key=True) # add a description
     name = db.Column(db.String(50), nullable=False, unique=True) # maybe make this the primary_key
     menues = db.relationship("MenueModel", backref="layout")
-    viewable_object_id = db.relationship("ViewableObjectModel", backref="layout")
+    viewable_objects = db.relationship("ViewableObjectModel", backref="layout")
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
 
@@ -127,6 +128,7 @@ class ViewableObjectModel(db.Model): # insted of creating a model for every layo
     attributes = db.relationship("ViewableObjectAttribute", backref="viewable_object", cascade="all,delete")
     bot_id = db.Column(db.Integer, db.ForeignKey("bot_model.id"), nullable=False)
     layout_id = db.Column(db.Integer, db.ForeignKey("layout_model.id"), nullable=False)
+    menue_id = db.Column(db.Integer, db.ForeignKey("menue_model.id"), nullable=False)
     create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
 

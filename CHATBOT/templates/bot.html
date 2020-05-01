@@ -12,7 +12,7 @@
     <h1>Layouts</h1>
     <ul>
         {% for layout in bot.layouts %}
-        <a href="{{ url_for('viewable_objects_router', bot_id=bot.id, layout_name=layout.name) }}"><li>{{ layout.name }}</li></a>
+        <a href="{{ url_for('layout', bot_id=bot.id, layout_id=layout.id) }}"><li>{{ layout.name }}</li></a>
         {% endfor %}
     </ul>
 

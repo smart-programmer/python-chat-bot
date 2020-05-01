@@ -16,4 +16,12 @@
    
 </form>
 
+
+<h1>Layouts</h1>
+<ul>
+    {% for layout in menue.bot.layouts %}
+    <a href="{{ url_for('viewable_objects_router', bot_id=menue.bot.id, layout_name=layout.name, menue_id=menue.id) }}"><li>{{ layout.name }}</li></a>
+    {% endfor %}
+</ul>
+
 {% endblock %}

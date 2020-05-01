@@ -40,8 +40,10 @@ def show_menue_layout(client, conversation_session): # a menue could be implemen
     show_text_process(client, menue_string, conversation_session)
 
 def show_products_prices_layout(client, conversation_session): # steps: 1- create layout Model 2- create menue with the layout 3- create viewable objects if needed step 4- write logic
+    bot = conversation_session.contact.bot
     layout = LayoutModel.query.filter_by(name=conversation_session.layout_name).first()
-    viewable_objects = ViewableObjectModel.query.filter_by(layout=layout, bot=conversation_session.contact.bot).all()
+    menue = MenueModel.query.filter(MenueModel.command==conversation_session.message, MenueModel.bot_id==bot.id).first()
+    viewable_objects = ViewableObjectModel.query.filter_by(layout=layout, bot=bot, menue=menue).all()
     if conversation_session.step_counter == 0:
         string = "our products\n\n"
         for index, vb in enumerate(viewable_objects): # add a description attribute so we can add description to things like pre build pc's
@@ -104,12 +106,12 @@ def show_scheduled_times_layout(client, conversation_session): #
         saturday = get_attribute(attributes, "saturday")
         schedule_string = """
         sunday:    {}\n
-    monday:    {}\n
-    tuesday:   {}\n
-    wednesday: {}\n
-    thursday:  {}\n
-    friday:    {}\n
-    saturday:  {}\n
+        monday:    {}\n
+        tuesday:   {}\n
+        wednesday: {}\n
+        thursday:  {}\n
+        friday:    {}\n
+        saturday:  {}\n
         """.format(sunday, monday, tuesday, wednesday, thursday, friday, saturday)
         show_text_process(client, schedule_string, conversation_session)
     else:

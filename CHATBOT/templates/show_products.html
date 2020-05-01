@@ -5,5 +5,7 @@
 {% if layout.name == "show_products" %}
 <h1>هذا التنسيق يستخدم لعرض المنتجات واسعارها ووصفها</h1>
 {% endif %}
+{% if layout not in bot.layouts %}
 <a href="{{ url_for('buy_layout', layout_id=layout.id, bot_id=bot.id) }}"><button type="button">اشتري هذا التنسيق</button></a>
+{% endif %}
 {% endblock %}

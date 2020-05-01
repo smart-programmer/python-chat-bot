@@ -3,5 +3,7 @@
 
 {% block content %}
 <h1>this system is for times</h1>
+{% if layout not in bot.layouts %}
 <a href="{{ url_for('buy_layout', layout_id=layout.id, bot_id=bot.id) }}"><button type="button">اشتري هذا التنسيق</button></a>
+{% endif %}
 {% endblock %}

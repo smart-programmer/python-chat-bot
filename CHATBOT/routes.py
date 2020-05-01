@@ -204,15 +204,24 @@ def update_bot(bot_id):
 @login_required
 def menue(menue_id):
     form = MenueForm()
+    
 
     menue = MenueModel.query.get(menue_id)
     if not menue or not menue.bot in current_user.bots:
         return redirect(url_for('index'))
+
+    bot = menue.bot
     
     if request.method == "GET":
         form.layout.data = menue.layout.name
         form.command.data = menue.command
         form.description.data = menue.description
+
+    layouts = bot.layouts
+    layout_choices = []
+    for layout in layouts:
+        layout_choices.append([layout.name, layout.name])
+    form.layout.choices = layout_choices
     
     if form.validate_on_submit():
         layout = LayoutModel.query.filter_by(name=form.layout.data).first()
@@ -223,8 +232,9 @@ def menue(menue_id):
         menue.command = form.command.data
         db.session.add(menue)
         db.session.commit()
+        return redirect(url_for("menue", menue_id=menue_id))
         
-    return render_template("menue.html", form=form)
+    return render_template("menue.html", form=form, menue=menue)
     
 
 @app.route("/menue_create/<int:bot_id>", methods=["GET", "POST"])
@@ -289,23 +299,23 @@ def buy_layout(bot_id, layout_id):# implement payment gateway here
    
 
 
-@app.route("/viewable_objects_router/<layout_name>/<int:bot_id>")
+@app.route("/viewable_objects_router/<layout_name>/<int:bot_id>/<int:menue_id>")
 @login_required
-def viewable_objects_router(layout_name, bot_id):
+def viewable_objects_router(layout_name, bot_id, menue_id):
     if layout_name == "show_products":
-        return redirect(url_for("products", bot_id=bot_id, layout_name=layout_name))
+        return redirect(url_for("products", bot_id=bot_id, layout_name=layout_name, menue_id=menue_id))
     elif layout_name == "events":
         return redirect(url_for("events", bot_id=bot_id))
     elif layout_name == "schedule_appointment":
         return redirect(url_for("appointments", bot_id=bot_id))
     elif layout_name == "show_scheduled_times":
-        return redirect(url_for("show_scheduled_times", bot_id=bot_id, layout_name=layout_name))
+        return redirect(url_for("show_scheduled_times", bot_id=bot_id, layout_name=layout_name, menue_id=menue_id))
 
     return redirect(url_for("index")) 
 
-@app.route("/products/<int:bot_id>/<layout_name>", methods=["GET", "POST"])
+@app.route("/products/<int:bot_id>/<layout_name>/<int:menue_id>", methods=["GET", "POST"])
 @login_required
-def products(bot_id, layout_name):
+def products(bot_id, layout_name, menue_id):
 
     form = ProductsForm()
 
@@ -317,7 +327,11 @@ def products(bot_id, layout_name):
     if not layout or not layout in bot.layouts:
         return redirect(url_for("index"))
 
-    products = ViewableObjectModel.query.filter_by(bot_id=bot.id, layout=layout).all()
+    menue = MenueModel.query.get(menue_id)
+    if not menue or not menue.bot == bot:
+        return redirect(url_for("index"))
+
+    products = ViewableObjectModel.query.filter_by(bot_id=bot.id, layout=layout, menue=menue).all()
     products_value = []
     for product in products:
         attributes = product.attributes
@@ -329,7 +343,7 @@ def products(bot_id, layout_name):
     products_value.reverse()
 
     if form.validate_on_submit():
-        product = ViewableObjectModel(layout=layout, bot=bot)
+        product = ViewableObjectModel(layout=layout, bot=bot, menue=menue)
         name = ViewableObjectAttribute(name="product_name", value=form.name.data, viewable_object=product)
         price = ViewableObjectAttribute(name="product_price", value=str(form.price.data), viewable_object=product)
         description = ViewableObjectAttribute(name="product_description", value=form.description.data, viewable_object=product)
@@ -340,7 +354,7 @@ def products(bot_id, layout_name):
         db.session.add(description)
         db.session.add(image)
         db.session.commit()
-        return redirect(url_for('products', bot_id=bot_id, layout_name=layout_name))
+        return redirect(url_for('products', bot_id=bot_id, layout_name=layout_name, menue_id=menue_id))
 
     return render_template("products.html", products_value=products_value, bot=bot, layout=layout, form=form)
 
@@ -364,8 +378,8 @@ def delete_product(product_id, bot_id):
 
 
 
-@app.route("/scheduled_times/<int:bot_id>/<layout_name>", methods=["GET", "POST"])
-def show_scheduled_times(bot_id, layout_name):
+@app.route("/scheduled_times/<int:bot_id>/<layout_name>/<int:menue_id>", methods=["GET", "POST"])
+def show_scheduled_times(bot_id, layout_name, menue_id):
 
     form = ScheduledTimesForm()
 
@@ -377,8 +391,12 @@ def show_scheduled_times(bot_id, layout_name):
     if not layout or not layout in bot.layouts:
         return redirect(url_for("index"))
 
+    menue = MenueModel.query.get(menue_id)
+    if not menue or not menue.bot == bot:
+        return redirect(url_for("index"))
+
     schedule_string = ""
-    week = ViewableObjectModel.query.filter_by(bot_id=bot.id, layout=layout).first()
+    week = ViewableObjectModel.query.filter_by(bot_id=bot.id, layout=layout, menue=menue).first()
     
     if request.method == "GET":
         if week:
@@ -412,7 +430,7 @@ def show_scheduled_times(bot_id, layout_name):
 
     if form.validate_on_submit():
         if not week:
-            week = ViewableObjectModel(layout=layout, bot=bot)
+            week = ViewableObjectModel(layout=layout, bot=bot, menue=menue)
             days = [ViewableObjectAttribute(name="sunday", value=form.sun.data, viewable_object=week),
             ViewableObjectAttribute(name="monday", value=form.mon.data, viewable_object=week),
             ViewableObjectAttribute(name="tuesday", value=form.tue.data, viewable_object=week),
