@@ -7,7 +7,7 @@
         }
     ],
     
-    "show_products_prices_layout":
+    "show_scheduled_times_layout":
     [
         {
             "tag": "schedule_string",
