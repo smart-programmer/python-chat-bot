@@ -3,6 +3,14 @@
 
 {% block content %}
 
+<form role="form" method="POST">
+    {{ form.hidden_tag() }}
+
+    {{ form.language.label() }}
+    {{ form.language(placeholder="language", onchange="this.form.submit()") }}
+
+</form>
+    {{ lang }}
     <h1>Menues</h1>
     <ul>
         {% for menue in bot.menues %}

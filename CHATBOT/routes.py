@@ -160,12 +160,21 @@ def bots(): # C
 @app.route("/bot/<int:bot_id>", methods=["GET", "POST"])
 @login_required
 def bot(bot_id): # C
+    form = LanguageForm()
+
     bot = BotModel.query.get(bot_id)
+   
 
     if not bot or not bot.user == current_user:
         return redirect(url_for('index'))
 
-    return render_template("bot.html", bot=bot)
+    if form.validate_on_submit():
+        bot.language = form.language.data
+        db.session.commit()
+    form.language.default = bot.language
+    form.process()
+
+    return render_template("bot.html", bot=bot, form=form, lang=bot.language)
 
 @app.route("/bot_create", methods=["GET", "POST"])
 @login_required

@@ -46,6 +46,7 @@ class BotModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, nullable=False)
     number = db.Column(db.String(20), unique=True, nullable=False)
+    language = db.Column(db.String(4), nullable=False, default="ar")
     active = db.Column(db.Boolean, default=False)
     layouts = db.relationship("LayoutModel", secondary=bot_layouts, backref=db.backref("bots", lazy="dynamic")) #many to many relationship with the layout model
     menues = db.relationship("MenueModel", backref="bot", cascade="all,delete")

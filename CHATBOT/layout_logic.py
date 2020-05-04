@@ -1,7 +1,8 @@
 from CHATBOT import db
 from CHATBOT.layout_processes import show_text_process, send_image_process
 from CHATBOT.models import MenueModel, ViewableObjectModel, ViewableObjectAttribute, LayoutModel
-from CHATBOT.utils import get_attribute, increment_step_counter
+from CHATBOT.utils import get_attribute, increment_step_counter, get_text
+from CHATBOT.objects import LngObj
 # define layouts logic
 
 
@@ -43,6 +44,7 @@ def show_products_prices_layout(client, conversation_session): # steps: 1- creat
     bot = conversation_session.contact.bot
     layout = LayoutModel.query.filter_by(name=conversation_session.layout_name).first()
     menue = MenueModel.query.get(conversation_session.menue_id)
+    lngobj = LngObj.translate("show_products_prices_layout", bot.language)
     viewable_objects = ViewableObjectModel.query.filter_by(layout=layout, bot=bot, menue=menue).all()
     if conversation_session.step_counter == 0:
         string = "our products\n\n"
@@ -96,6 +98,7 @@ def show_scheduled_times_layout(client, conversation_session): #
     bot = conversation_session.contact.bot
     layout = LayoutModel.query.filter_by(name=conversation_session.layout_name).first()
     menue = MenueModel.query.get(conversation_session.menue_id)
+    lngobj = LngObj.translate("show_scheduled_times_layout", bot.language)
     week = ViewableObjectModel.query.filter_by(layout=layout, bot=bot, menue=menue).first()
     if week:
         attributes = week.attributes
@@ -106,15 +109,7 @@ def show_scheduled_times_layout(client, conversation_session): #
         thursday = get_attribute(attributes, "thursday")
         friday = get_attribute(attributes, "friday")
         saturday = get_attribute(attributes, "saturday")
-        schedule_string = """
-        sunday:    {}\n
-        monday:    {}\n
-        tuesday:   {}\n
-        wednesday: {}\n
-        thursday:  {}\n
-        friday:    {}\n
-        saturday:  {}\n
-        """.format(sunday, monday, tuesday, wednesday, thursday, friday, saturday)
+        schedule_string = get_text("schedule_string", lngobj).format(sunday, monday, tuesday, wednesday, thursday, friday, saturday)
         show_text_process(client, schedule_string, conversation_session)
     else:
         show_text_process(client, "no chedule available", conversation_session)

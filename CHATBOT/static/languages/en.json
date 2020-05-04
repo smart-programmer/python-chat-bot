@@ -5,5 +5,13 @@
             "tag": "h1-1",
             "description": "welcome to the new almusand chatbot creation website"
         }
+    ],
+    
+    "show_products_prices_layout":
+    [
+        {
+            "tag": "schedule_string",
+            "description": "sunday    {}\\nmonday    {}\\ntuesday    {}\\nwednesday    {}\\nthursday    {}\\nfriday    {}\\nsaturday    {}"
+        }
     ]
 }

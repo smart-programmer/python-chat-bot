@@ -52,3 +52,7 @@ def read_language_file(page_name, language):
 def increment_step_counter(conversation_session):
     conversation_session.step_counter += 1
     db.session.commit()
+    
+    
+def get_text(tag, language_list):
+        return next(x.get("description") for x in language_list if x.get("tag") == tag)
