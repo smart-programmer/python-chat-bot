@@ -11,12 +11,12 @@
     [
         {
             "tag": "greeting",
-            "description": "Welcome to Jeddah Motors whatsapp store to begin please enert your name"
+            "description": "Welcome to Jeddah Motors whatsapp store to begin please enter your name"
         },
 
         {
             "tag": "name-confirmation",
-            "description": "your name is {} correct? enert Yes to complete and No to re-register"
+            "description": "your name is {} correct? enter Yes to complete and No to re-register"
         }
     ],
     
