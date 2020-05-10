@@ -639,4 +639,4 @@ def admin_delete_channel(channel_id):
 
 @app.route("/foo")
 def test():
-    return request.url_root
+    return render_template("test.html")

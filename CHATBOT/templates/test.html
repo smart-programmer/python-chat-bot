@@ -1,0 +1,55 @@
+{% extends "layouts/_systemsLayout.html" %}
+
+{% block content %}
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Bot name</h1>
+    <hr class="my-4">
+    <p class="lead">bot data - date - number - state ....</p>
+    <div class="dropdown">
+      <button class="btn btn-success dropdown-toggle nav-button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Bot language
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">Action</a>
+        <a class="dropdown-item" href="#">Another action</a>
+        <a class="dropdown-item" href="#">Something else here</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+ 
+<div id="nav_card">
+  
+    <nav id="nav-card1" class="navbar navbar-light card_nav_bar">
+        <a class="navbar-brand" href="#">Menues</a>
+        <ul class="nav nav-pills">
+        <li class="nav-item">
+            <a href=""><button type="button" class="btn btn-success nav-button">add command</button></a>
+        </li>
+        <div class="dropdown">
+          <button class="btn btn-success dropdown-toggle nav-button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            My layouts
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </div>
+        </ul>
+    </nav>
+    <div data-spy="scroll" data-target="#nav-card1" data-offset="0" class="scrollable-div">
+        <div class="card nav-card-nested">
+            <h5 class="card-header">Menue command</h5>
+            <div class="card-body">
+              <h5 class="card-title">layout name</h5>
+              <p class="card-text">menue description</p>
+              <button type="button" class="btn btn-primary">see command</button><button type="button" class="btn btn-primary">delete command</button>
+            </div>
+          </div>
+    </div>
+    </div>
+
+{% endblock %}

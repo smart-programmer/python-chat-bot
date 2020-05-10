@@ -11,7 +11,7 @@
     [
         {
             "tag": "schedule_string",
-            "description": "sunday    {}\nmonday    {}\ntuesday    {}\nwednesday    {}\nthursday    {}\nfriday    {}\nsaturday    {}"
+            "description": "sunday    {}\n\nmonday    {}\n\ntuesday    {}\n\nwednesday    {}\n\nthursday    {}\n\nfriday    {}\n\nsaturday    {}"
         }
     ]
 }

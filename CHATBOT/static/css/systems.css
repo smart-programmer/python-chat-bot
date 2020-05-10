@@ -1,0 +1,48 @@
+
+
+#nav_card {
+
+	background-color: white;
+	margin-top: 70px;
+	margin-bottom: 100px;
+	margin-right: 100px;
+	margin-left: 100px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		
+
+}
+
+.jumbotron{
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.card_nav_bar {
+	background-color:  #ebae34;
+	
+}
+
+.scrollable-div {
+	overflow-y: scroll;
+	height: 350px;
+}
+
+.nav-card-nested{
+	text-align: center;
+	margin: 10px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.navbar{
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+button {
+	background-color: #4bc79e;
+}
+
+.nav-button{
+	margin-right: 3px;
+	margin-left: 3px;
+	background-color: hsl(157, 54%, 59%);
+	border: #4bc79e;
+}

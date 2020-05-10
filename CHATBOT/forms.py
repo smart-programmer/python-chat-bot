@@ -41,7 +41,7 @@ class MenueForm(FlaskForm):
 class ProductsForm(FlaskForm): # layout form
     name = wtforms.StringField("الاسم",  validators=[DataRequired(), length(max=255)])
     price = wtforms.FloatField("السعر",  validators=[DataRequired()])
-    description =  wtforms.StringField("الوصف", validators=[length(max=500)])
+    description =  wtforms.StringField("الوصف", validators=[length(max=500)], widget=TextArea())
     image_url = wtforms.StringField('رابط الصورة', validators=[length(max=500)])
     submit = wtforms.SubmitField("ارفع منتج")
 

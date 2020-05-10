@@ -109,6 +109,7 @@ def show_scheduled_times_layout(client, conversation_session): #
         thursday = get_attribute(attributes, "thursday")
         friday = get_attribute(attributes, "friday")
         saturday = get_attribute(attributes, "saturday")
+        
         schedule_string = get_text("schedule_string", lngobj).format(sunday, monday, tuesday, wednesday, thursday, friday, saturday)
         show_text_process(client, schedule_string, conversation_session)
     else:
