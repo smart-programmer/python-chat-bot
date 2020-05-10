@@ -6,6 +6,19 @@
             "description": "welcome to the new almusand chatbot creation website"
         }
     ],
+
+    "new_contact_layout":
+    [
+        {
+            "tag": "greeting",
+            "description": "Welcome to Jeddah Motors whatsapp store to begin please enert your name"
+        },
+
+        {
+            "tag": "name-confirmation",
+            "description": "your name is {} correct? enert Yes to complete and No to re-register"
+        }
+    ],
     
     "show_scheduled_times_layout":
     [

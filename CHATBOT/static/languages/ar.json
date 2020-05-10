@@ -6,6 +6,19 @@
             "description": "اهلا بك في موقع المساند لإنشاء البوتات"
         }
     ],
+
+    "new_contact_layout":
+    [
+        {
+            "tag": "greeting",
+            "description": "اهلا بك في متجر واتساب جدة للسيارات, ارسل اسمك للبدء"
+        },
+
+        {
+            "tag": "name-confirmation",
+            "description": "اسمك هو {} صحيح؟ ارسل نعم للبدء و لا لإعادة التسجيل"
+        }
+    ],
     
     "show_scheduled_times_layout":
     [

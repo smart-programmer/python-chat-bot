@@ -9,15 +9,17 @@ from CHATBOT.objects import LngObj
 def new_contact_layout(client, conversation_session): # new_contact_layout should be a somple message then a registration process
     # to do
     contact = conversation_session.contact
+    bot = contact.bot
     message = conversation_session.message
+    lngobj = LngObj.translate("new_contact_layout", bot.language)
     if conversation_session.step_counter == 0:
         # to do: simple welcoming message
-        show_text_process(client, "السلام عليكم ورحمة الله وبركاته اهلا وسهلا بك في بوت المساند, الرجاء ادخال الاسم للبدء", conversation_session) # after we create customer models this should be a string of text with the prefered language of the customer that's extracted from a language file like the old bot
+        show_text_process(client, get_text("greeting", lngobj), conversation_session) # after we create customer models this should be a string of text with the prefered language of the customer that's extracted from a language file like the old bot
         conversation_session.step_counter += 1
         db.session.commit() 
         return False
     elif conversation_session.step_counter == 1:
-        show_text_process(client, "هل تريد الاكمال بالاسم {} ؟ نعم,لا".format(message), conversation_session)
+        show_text_process(client, get_text("name-confirmation", lngobj).format(message), conversation_session)
         contact.name = message
         conversation_session.step_counter += 1
         db.session.commit()
