@@ -381,9 +381,10 @@ def delete_product(product_id, bot_id):
             return redirect(url_for("index"))
     
     layout = product.layout
+    menue = product.menue
     db.session.delete(product)
     db.session.commit()
-    return redirect(url_for('products', layout_name=layout.name, bot_id=bot.id))
+    return redirect(url_for('products', layout_name=layout.name, bot_id=bot.id, menue_id=menue.id))
 
 
 
