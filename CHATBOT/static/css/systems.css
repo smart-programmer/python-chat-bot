@@ -46,3 +46,9 @@ button {
 	background-color: hsl(157, 54%, 59%);
 	border: #4bc79e;
 }
+
+
+.card-button{
+	margin-right: 3px;
+	margin-left: 3px;
+}

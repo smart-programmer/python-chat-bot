@@ -1,13 +1,43 @@
-{% extends "layout.html" %}
+{% extends "layouts/_systemsLAyout.html" %}
+
+{% block csslinks %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bots.css') }}">
+{% endblock %}
+
+{% block navlinks %}
+{% endblock %}
+
 
 
 {% block content %}
 
-<a href="{{ url_for('create_bot') }}"><h1>create a bot</h1></a>
+<div class="body">
 
-{% for bot in current_user.bots %}
-    <a href="{{ url_for('bot', bot_id=bot.id) }}">
-        <h1>{{ bot.name }} - {{ bot.number }} - {% if bot.active %}مفعل{% else %}غير مفعل{% endif %}</h1></a>
-{% endfor %}
+    <a href="{{ url_for('create_bot') }}"><h1>create a bot</h1></a>
+
+          
+    <main class="container p-10 ">
+        <div class="row p-3 align-items-center">
+            {% for bot in current_user.bots %}
+                <div class="card text-white bg-success col-xl-3 col-md-5 m-1  col-sm-9">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ bot.name }}</h4>
+                            <h3 class="card-title">{{ bot.number }}</h3>
+                            <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+                            <h5 class="card-title">{% if bot.active %}activated{% else %}deactivated{% endif %}</h5>
+                            <a href="{{ url_for('bot', bot_id=bot.id) }}" class="btn btn-primary bg-warning card-button
+                            ">See Bot</a>
+                            <a href="{{ url_for('delete_bot', bot_id=bot.id) }}" class="btn btn-primary bg-warning card-button
+                            ">Delete Bot</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+    
+        </div>
+    
+        </div>
+        
+    </main>
+</div>
 
 {% endblock %}

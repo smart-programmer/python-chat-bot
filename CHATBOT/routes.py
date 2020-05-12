@@ -171,10 +171,11 @@ def bot(bot_id): # C
     if form.validate_on_submit():
         bot.language = form.language.data
         db.session.commit()
+        return redirect(url_for("bot", bot_id=bot_id))
     form.language.default = bot.language
     form.process()
 
-    return render_template("bot.html", bot=bot, form=form, lang=bot.language)
+    return render_template("test.html", bot=bot, form=form, lang=bot.language)
 
 @app.route("/bot_create", methods=["GET", "POST"])
 @login_required
@@ -188,6 +189,21 @@ def create_bot(): # C
         return redirect(url_for("bots"))
 
     return render_template("bot_create.html", form=form)
+
+@app.route("/bot_delete/<int:bot_id>")
+@login_required
+def delete_bot(bot_id): 
+
+    bot = BotModel.query.get(bot_id)
+
+    if not bot or not bot.user == current_user:
+        return redirect(url_for('index'))
+   
+
+    db.session.delete(bot)
+    db.session.commit()
+    return redirect(url_for("bots"))
+
 
 @app.route("/update_bot/<int:bot_id>", methods=["GET", "POST"])
 @login_required

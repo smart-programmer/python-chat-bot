@@ -1,18 +1,27 @@
-{% extends "layout.html" %}
+{% extends "layouts/_generalLayout.html" %}
+
+{% block csslinks %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
+
+{% block navlinks %}
+<form role="form" method="POST" action="{{ url_for('set_language') }}">
+    {{ form.hidden_tag() }}
+    
+    <li class="nav-item active"></li>
+   
+    {{ form.language(placeholder="language", onchange="this.form.submit()",  class="form-control form-control-sm") }}
+  </li>
+</form>
+{% endblock %}
 
 
 {% block content %}
-<h1>اهلا بك في موقع bot creator</h1>
-<h1>{{ get_text('h1-1', language_list) }}</h1>
+<div class="body">
 
+    <h1>{{ get_text('h1-1', language_list) }}</h1>
 
-<form role="form" method="POST" action="{{ url_for('set_language') }}">
-    {{ form.hidden_tag() }}
-
-    {{ form.language.label() }}
-    {{ form.language(placeholder="language", onchange="this.form.submit()") }}
-
-</form>
-
+</div>
 
 {% endblock %}
