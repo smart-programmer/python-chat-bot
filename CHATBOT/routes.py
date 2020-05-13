@@ -285,7 +285,7 @@ def menue_create(bot_id):
         menue = MenueModel(bot=bot, layout=layout, description=form.description.data, command=form.command.data)
         db.session.add(menue)
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('bot', bot_id=bot_id))
     return render_template("menue_create.html", form=form)
 
 @app.route("/layouts/<int:bot_id>")
