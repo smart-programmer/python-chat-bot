@@ -175,7 +175,7 @@ def bot(bot_id): # C
     form.language.default = bot.language
     form.process()
 
-    return render_template("test.html", bot=bot, form=form, lang=bot.language)
+    return render_template("bot.html", bot=bot, form=form, lang=bot.language)
 
 @app.route("/bot_create", methods=["GET", "POST"])
 @login_required

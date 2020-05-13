@@ -1,19 +1,31 @@
-{% extends "layout.html" %}
+{% extends "layouts/_systemsLayout.html" %}
+
+{% block csslinks %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
+{% endblock %}
 
 
 {% block content %}
-<form class="form-horizontal" role="form" method="POST">
+<div class="form">
+    <h3 id="form-title">create a command</h3>
+<form role="form" method="POST">
     {{ form.hidden_tag() }}
 
 
+    <div class="form-group">
     {{ form.command(placeholder="command") }}
+    </div>
 
+    <div class="form-group">
     {{ form.description(placeholder="description") }}
+    </div>
 
+    <div class="form-group">
     {{ form.layout(placeholder="layout") }}
+    </div>
 
-    {{ form.submit() }}
+    {{ form.submit(class="btn btn-primary") }}
    
 </form>
-
+</div>
 {% endblock %}

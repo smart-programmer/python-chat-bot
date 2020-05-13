@@ -1,31 +1,60 @@
-{% extends "layout.html" %}
-
+{% extends "layouts/_systemsLayout.html" %}
 
 {% block content %}
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">{{ bot.name }}</h1>
+    <hr class="my-4">
+    <p class="lead">{{ bot.number }} - {% if bot.active %}activated{% else %}deactivated{% endif %} - {{ bot.name }}</p>
+    <form role="form" method="POST">
+      {{ form.hidden_tag() }}
+      
+      <p id="language_form_p">select bot language</p>
+      {{ form.language(placeholder="language", onchange="this.form.submit()",  class="btn btn-success dropdown-toggle nav-button", id="dropdownMenuButton") }}
+   
+    </form>
+   
+  </div>
+</div>
 
-<form role="form" method="POST">
-    {{ form.hidden_tag() }}
-
-    {{ form.language.label() }}
-    {{ form.language(placeholder="language", onchange="this.form.submit()") }}
-
-</form>
-    {{ lang }}
-    <h1>Menues</h1>
-    <ul>
-        {% for menue in bot.menues %}
-        <a href="{{ url_for('menue', menue_id=menue.id) }}"><li>{{ menue.command }} : {{ menue.description }} : {{ menue.layout.name }}</li></a>
-        {% endfor %}
-    </ul>
-    <h1>Layouts</h1>
-    <ul>
-        {% for layout in bot.layouts %}
-        <a href="{{ url_for('layout', bot_id=bot.id, layout_id=layout.id) }}"><li>{{ layout.name }}</li></a>
-        {% endfor %}
-    </ul>
-
-    <a href="{{ url_for('menue_create', bot_id=bot.id) }}"><h1>add command</h1></a>
-    <a href="{{ url_for('layouts', bot_id=bot.id) }}"><h1>get layouts</h1></a>
-
+ 
+<div id="nav_card">
+  
+    <nav id="nav-card1" class="navbar navbar-light card_nav_bar">
+        <a class="navbar-brand" href="#">Menues</a>
+        <ul class="nav nav-pills">
+        <li class="nav-item">
+            <a href="{{ url_for('menue_create', bot_id=bot.id) }}"><button type="button" class="btn btn-success nav-button">add command</button></a>
+        </li>
+        <div class="dropdown">
+          <button class="btn btn-success dropdown-toggle nav-button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            My layouts
+          </button>
+    
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% for layout in bot.layouts %}
+            <a class="dropdown-item" href="{{ url_for('layout', bot_id=bot.id, layout_id=layout.id) }}">{{ layout.name }}</a>
+            {% endfor %}
+            
+          </div>
+        </div>
+        <li class="nav-item">
+          <a href="{{ url_for('layouts', bot_id=bot.id) }}"><button type="button" class="btn btn-success nav-button">get layouts</button></a>
+      </li>
+        </ul>
+    </nav>
+    <div data-spy="scroll" data-target="#nav-card1" data-offset="0" class="scrollable-div">
+      {% for menue in bot.menues %}
+        <div class="card nav-card-nested">
+            <h5 class="card-header">{{ menue.command }}</h5>
+            <div class="card-body">
+              <h5 class="card-title">{{ menue.layout.name }}</h5>
+              <p class="card-text">{{ menue.description }}</p>
+              <a href="{{ url_for('menue', menue_id=menue.id) }}"><button type="button" class="btn btn-primary card-button">see command</button></a><a href="#"><button type="button" class="btn btn-primary card-button">delete command</button></a>
+            </div>
+          </div>
+          {% endfor %}
+    </div>
+    </div>
 
 {% endblock %}
