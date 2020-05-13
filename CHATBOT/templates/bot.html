@@ -44,7 +44,7 @@
         </ul>
     </nav>
     <div data-spy="scroll" data-target="#nav-card1" data-offset="0" class="scrollable-div">
-      {% for menue in bot.menues %}
+      {% for menue in bot.menues|reverse %}
         <div class="card nav-card-nested">
             <h5 class="card-header">{{ menue.command }}</h5>
             <div class="card-body">
