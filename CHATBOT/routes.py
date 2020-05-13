@@ -451,7 +451,7 @@ def show_scheduled_times(bot_id, layout_name, menue_id):
             form.fri.data = friday
             form.sat.data = saturday
         else:
-            schedule_string = "heyyy"
+            schedule_string = "no schedule"
 
 
     if form.validate_on_submit():

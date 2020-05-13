@@ -1,25 +1,37 @@
-{% extends "layout.html" %}
+{% extends "layouts/_systemsLayout.html" %}
+
+{% block csslinks %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
+{% endblock %}
 
 
 {% block content %}
 
-<form class="form-horizontal" role="form" method="POST">
+<div class="form">
+    <h3 id="form-title">add a product</h3>
+<form role="form" method="POST">
     {{ form.hidden_tag() }}
 
-
+    <div class="form-group">
     {{ form.name(placeholder="الاسم") }}
+    </div>
 
+    <div class="form-group">
     {{ form.price(placeholder="السعر") }}
+    </div>
 
-    {{ form.description(placeholder="التفاصيل") }}
-    <br>
+    <div class="form-group">
     {{ form.image_url(placeholder="رابط صورة المنتج") }}
-    <br>
+    </div>
+
+    <div class="form-group">
+    {{ form.description(placeholder="التفاصيل", class="form-control", rows="3") }}
+    </div>
 
     {{ form.submit() }}
    
 </form>
-
+</div>
 
 
 
