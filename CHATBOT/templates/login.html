@@ -7,26 +7,37 @@
 
 
 {% block content %}
-<div class="form">
+<div class="container my-container">
     <h3 id="form-title">Login</h3>
 <form role="form" method="POST">
     {{ form.hidden_tag() }}
 
-    <div class="form-group">
-    {{ form.username.label() }}
-    {{ form.username(placeholder="username") }}
+    
+    <div class="form-group row">
+        {{ form.username.label(class="col-sm-12 col-xs-12") }}
+    </div>
+    <div class="form-group row">
+        {{ form.username(placeholder="username", class="col-sm-12 col-xs-12") }}
     </div>
 
-    <div class="form-group">
-    {{ form.password.label() }}
-    {{ form.password(placeholder="password") }}
-    </div>  
+    <div class="form-group row">
+            {{ form.password.label(class="col-sm-12 col-xs-12") }}
+    </div>
+    <div class="form-group row">
+        {{ form.password(placeholder="password", class="col-sm-12 col-xs-12") }}
+    </div>
 
-    {{ form.submit(class="btn btn-primary") }}
+    <div class="form-group row">
+    {{ form.submit(class="btn btn-primary col-sm-12 col-xs-12") }}
+    </div>
    
 </form>
-<a href="{{ url_for('register') }}"><h1>register</h1></a>
+    <div class="row">
+        <div class="col-sm-12 col-xs-5"></div>
+            <a href="{{ url_for('register') }}"><h1>register</h1></a>
+        </div>
+    </div>
 </div>
-<a href="{{ url_for('register') }}"><h1>register</h1></a>
+
 
 {% endblock %}
